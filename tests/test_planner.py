@@ -58,6 +58,20 @@ class PlannerTests(unittest.TestCase):
         same = planner.build_state(CATALOG, profile(), [entry('CSE312', **TERM)], imported, TERM)
         self.assertFalse(same['plan'][0]['readiness']['met'])
 
+    def test_future_suggestions_and_map_include_current_courses_provisionally(self):
+        p = profile('CSE123', 'CSE311', 'CSE332', 'MATH208', interests=['ai'])
+        imported = [{'code': 'CSE312', **TERM}]
+        result = planner.build_state(CATALOG, p, [], imported, TERM)
+        course = next(c for c in result['courses'] if c['code'] == 'CSE446')
+        self.assertTrue(course['readiness']['met'])
+        self.assertEqual(course['readiness']['assumed_current'], ['CSE312'])
+        suggestion = next(s for s in result['suggestions'] if s['code'] == 'CSE446')
+        self.assertTrue(suggestion['readiness']['met'])
+        self.assertEqual(result['requirements']['fundamentals_done'], 3)
+        self.assertNotIn('CSE312', [c['code'] for c in result['profile']['completed']])
+        historical = planner.build_state(CATALOG, p, [], [{'code':'CSE312','quarter':'Spring','year':2026}], TERM)
+        self.assertFalse(next(c for c in historical['courses'] if c['code']=='CSE446')['readiness']['met'])
+
     def test_requirements_do_not_count_fundamentals_as_core_or_failed_credits(self):
         p = profile('CSE123', 'CSE311', 'CSE312', 'CSE331', 'CSE332', 'CSE351', 'CSE333', 'CSE480')
         r = planner.requirement_progress(CATALOG, p)

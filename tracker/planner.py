@@ -111,10 +111,16 @@ def build_state(catalog, profile, plan, imported, current_term):
     by_code = {c['code']: c for c in catalog['courses']}
     fundamentals = {c for group in catalog['fundamentals'] for c in group}
     progress = requirement_progress(catalog, profile)
+    # Course discovery is for future quarters. Current enrollments are provisional,
+    # never added to completed history or degree progress.
+    future_completed = dict(completed)
+    for code in current: future_completed.setdefault(code, None)
     courses, suggestions = [], []
     for course in catalog['courses']:
         code = course['code']
-        status = prerequisite_status(course, completed)
+        status = prerequisite_status(course, future_completed)
+        required_codes = {code for group in course["prerequisites"] for code in group["any_of"]}
+        status["assumed_current"] = sorted((current - set(completed)).intersection(required_codes))
         unlocks = [c['code'] for c in catalog['courses'] if any(code in group['any_of'] for group in c['prerequisites'])]
         record = {**course, 'readiness': status, 'unlocks': unlocks,
                   'status': 'completed' if code in completed else 'current' if code in current else 'planned' if code in planned else 'ready' if status['met'] else 'review' if status['needs_catalog_review'] else 'blocked'}
@@ -156,4 +162,4 @@ def build_state(catalog, profile, plan, imported, current_term):
         evaluated_plan.append(evaluated)
         evaluated_by_code[entry['code']] = evaluated
     return {'version': catalog['version'], 'sources': catalog['sources'], 'interests': catalog['interests'], 'courses': courses,
-            'profile': profile, 'plan': evaluated_plan, 'requirements': progress, 'suggestions': suggestions[:12]}
+            'current_courses': sorted(current - set(completed)), 'profile': profile, 'plan': evaluated_plan, 'requirements': progress, 'suggestions': suggestions[:12]}

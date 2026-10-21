@@ -173,8 +173,14 @@
       rows.set(column, row + 1);
     }
     dimensions = {
-      width: Math.max(search.trim() ? 320 : 800, 48 + (Math.max(0, ...rows.keys()) + 1) * 252),
-      height: Math.max(search.trim() ? 180 : 360, 70 + Math.max(0, ...rows.values()) * 94),
+      width: Math.max(
+        search.trim() ? 320 : 800,
+        48 + (Math.max(0, ...rows.keys()) + 1) * 252,
+      ),
+      height: Math.max(
+        search.trim() ? 180 : 360,
+        70 + Math.max(0, ...rows.values()) * 94,
+      ),
     };
     const edges = [];
     for (const course of courses) {
@@ -207,7 +213,9 @@
       completed: "Completed",
       current: "Imported in current quarter",
       planned: "In your future plan",
-      ready: "Prerequisites met",
+      ready: c.readiness.assumed_current?.length
+        ? "Ready after current courses"
+        : "Prerequisites met",
       review: "Check catalog prerequisites",
       blocked: "Prerequisites missing",
     }[c.status];
@@ -216,6 +224,11 @@
     return readiness.missing
       .map((group) => group.map(label).join(" or "))
       .join("; and ");
+  }
+  function currentAssumption(r) {
+    return r.assumed_current?.length
+      ? `<p class="note">For your future quarter: assumes successful completion of ${r.assumed_current.map(label).map(escape).join(", ")} this quarter. Minimum grades still apply.</p>`
+      : "";
   }
   function gradeWarning(r) {
     return r.grade_review.length
@@ -237,7 +250,7 @@
     const completed = state.planner.profile.completed.find(
       (r) => r.code === c.code,
     );
-    return `<aside class="planner-course-detail panel"><div class="planner-detail-head"><span class="course-code">${escape(label(c.code))}</span><span class="tag">${c.credits ?? "Variable"} credits</span><h2>${escape(c.name)}</h2><span class="planner-status status-${c.status}">${escape(statusLabel(c))}</span></div><div class="planner-detail-body"><h3>Before you take this course</h3>${c.prerequisites.length ? `<p class="note">Meet every group below; choose any one course within an “or” group.</p>${c.prerequisites.map((g) => `<div class="prereq-group">${g.any_of.map((code) => `<button type="button" class="prereq-chip ${state.planner.profile.completed.some((r) => r.code === code) ? "is-complete" : ""}" data-select-course="${code}">${escape(label(code))}</button>`).join('<span class="prereq-or">or</span>')}${g.minimum_grade ? `<small>Minimum ${g.minimum_grade.toFixed(1)}</small>` : ""}</div>`).join("")}` : `<p class="note">${c.external || !c.modeled ? "Prerequisites for this course are not modeled. Use its catalog link." : "No formal prerequisite listed; verify placement and prior experience."}</p>`}${gradeWarning(c.readiness)}${c.recommended.length ? `<h3>Recommended preparation</h3><p class="note">${c.recommended.map(label).map(escape).join(", ")}. Recommendations do not block your plan.</p>` : ""}<details class="prereq-source"><summary>Official prerequisite text</summary><p>${escape(c.prerequisite_text)}</p>${sourceLink(c.source, "Course catalog")}</details><h3>What you can take next</h3><div class="unlock-list">${c.unlocks.map((code) => `<button type="button" class="text-button" data-select-course="${code}">${escape(label(code))}</button>`).join("") || '<span class="note">No downstream courses mapped in this catalog.</span>'}</div><div class="planner-course-actions">${completed ? `<span class="note">Completed${completed.grade !== null ? " · grade " + completed.grade.toFixed(1) : " · grade not entered"}</span><button type="button" class="secondary" data-plan-action="uncomplete" data-code="${c.code}">Remove completion</button>` : `<button type="button" class="primary" data-plan-action="plan" data-code="${c.code}">Plan for ${escape(target)}</button><button type="button" class="secondary" data-plan-action="complete" data-code="${c.code}">Record as completed</button>`}<button type="button" class="text-button" data-plan-action="import" data-code="${c.code}" ${!c.code.startsWith("CSE") ? "disabled" : ""}>Import course schedule ↗</button></div></div></aside>`;
+    return `<aside class="planner-course-detail panel"><div class="planner-detail-head"><span class="course-code">${escape(label(c.code))}</span><span class="tag">${c.credits ?? "Variable"} credits</span><h2>${escape(c.name)}</h2><span class="planner-status status-${c.status}">${escape(statusLabel(c))}</span></div><div class="planner-detail-body"><h3>Before you take this course</h3>${c.prerequisites.length ? `<p class="note">Meet every group below; choose any one course within an “or” group.</p>${c.prerequisites.map((g) => `<div class="prereq-group">${g.any_of.map((code) => `<button type="button" class="prereq-chip ${state.planner.profile.completed.some((r) => r.code === code) ? "is-complete" : ""}" data-select-course="${code}">${escape(label(code))}</button>`).join('<span class="prereq-or">or</span>')}${g.minimum_grade ? `<small>Minimum ${g.minimum_grade.toFixed(1)}</small>` : ""}</div>`).join("")}` : `<p class="note">${c.external || !c.modeled ? "Prerequisites for this course are not modeled. Use its catalog link." : "No formal prerequisite listed; verify placement and prior experience."}</p>`}${currentAssumption(c.readiness)}${gradeWarning(c.readiness)}${c.recommended.length ? `<h3>Recommended preparation</h3><p class="note">${c.recommended.map(label).map(escape).join(", ")}. Recommendations do not block your plan.</p>` : ""}<details class="prereq-source"><summary>Official prerequisite text</summary><p>${escape(c.prerequisite_text)}</p>${sourceLink(c.source, "Course catalog")}</details><h3>What you can take next</h3><div class="unlock-list">${c.unlocks.map((code) => `<button type="button" class="text-button" data-select-course="${code}">${escape(label(code))}</button>`).join("") || '<span class="note">No downstream courses mapped in this catalog.</span>'}</div><div class="planner-course-actions">${completed ? `<span class="note">Completed${completed.grade !== null ? " · grade " + completed.grade.toFixed(1) : " · grade not entered"}</span><button type="button" class="secondary" data-plan-action="uncomplete" data-code="${c.code}">Remove completion</button>` : `<button type="button" class="primary" data-plan-action="plan" data-code="${c.code}">Plan for ${escape(target)}</button><button type="button" class="secondary" data-plan-action="complete" data-code="${c.code}">Record as completed</button>`}<button type="button" class="text-button" data-plan-action="import" data-code="${c.code}" ${!c.code.startsWith("CSE") ? "disabled" : ""}>Import course schedule ↗</button></div></div></aside>`;
   }
 
   function profile() {
@@ -257,7 +270,7 @@
         .slice(0, 6)
         .map((s) => {
           const c = byCode().get(s.code);
-          return `<article class="suggestion-card panel"><button class="text-button suggestion-code" type="button" data-select-course="${c.code}">${escape(label(c.code))} →</button><h3>${escape(c.name)}</h3><span class="planner-status ${s.readiness.met ? "status-ready" : "status-blocked"}">${s.readiness.met ? "Prerequisites met" : "Prerequisites missing"}</span>${s.reasons.map((reason) => `<p class="suggestion-reason">${escape(reason)}</p>`).join("")}${s.readiness.missing.length ? `<p class="planner-caution">Needs ${escape(missingText(s.readiness))}</p>` : ""}${gradeWarning(s.readiness)}<button class="secondary" type="button" data-plan-action="plan" data-code="${c.code}">Plan for ${escape(target)}</button></article>`;
+          return `<article class="suggestion-card panel"><button class="text-button suggestion-code" type="button" data-select-course="${c.code}">${escape(label(c.code))} →</button><h3>${escape(c.name)}</h3><span class="planner-status ${s.readiness.met ? "status-ready" : "status-blocked"}">${s.readiness.met ? (s.readiness.assumed_current?.length ? "Ready after current courses" : "Prerequisites met") : "Prerequisites missing"}</span>${s.reasons.map((reason) => `<p class="suggestion-reason">${escape(reason)}</p>`).join("")}${s.readiness.missing.length ? `<p class="planner-caution">Needs ${escape(missingText(s.readiness))}</p>` : ""}${currentAssumption(s.readiness)}${gradeWarning(s.readiness)}<button class="secondary" type="button" data-plan-action="plan" data-code="${c.code}">Plan for ${escape(target)}</button></article>`;
         })
         .join("") ||
       '<div class="empty">Add interests or update your course history to explore more suggestions.</div>'
@@ -297,7 +310,7 @@
     if (!target || !terms.some((t) => termKey(t) === target))
       target = termKey(terms[0]);
     const r = state.planner.requirements;
-    return `<div id="planner-root"><div class="planner-intro"><div><span class="tag">${state.planner.profile.major === "cs" ? "UW Seattle · Computer Science BS" : "Course exploration"}</span><p>Build a path, see what unlocks next, and keep your future quarters separate from assignment tracking.</p></div><label class="target-quarter-label">Plan into<select id="planner-target">${terms.map((t) => `<option ${termKey(t) === target ? "selected" : ""}>${escape(termKey(t))}</option>`).join("")}</select></label></div>${profile()}<div class="planner-stats">${[
+    return `<div id="planner-root"><div class="planner-intro"><div><span class="tag">${state.planner.profile.major === "cs" ? "UW Seattle · Computer Science BS" : "Course exploration"}</span><p>Build a path, see what unlocks next, and keep your future quarters separate from assignment tracking.</p></div><label class="target-quarter-label">Plan into<select id="planner-target">${terms.map((t) => `<option ${termKey(t) === target ? "selected" : ""}>${escape(termKey(t))}</option>`).join("")}</select></label></div>${profile()}${state.planner.current_courses?.length ? `<p class="note">Planning ahead from ${escape(termKey(state.term))}: ${state.planner.current_courses.map(label).map(escape).join(", ")} count as in progress. Suggestions and prerequisites for future quarters assume you finish them; degree progress counts completed courses only.</p>` : ""}<div class="planner-stats">${[
       [
         "Completed",
         state.planner.profile.completed.length,
@@ -347,7 +360,9 @@
   function positionGraph() {
     const canvas = document.querySelector(".planner-graph-canvas");
     if (!canvas) return;
-    canvas.parentElement.style.height = search.trim() ? Math.min(470, dimensions.height) + "px" : "";
+    canvas.parentElement.style.height = search.trim()
+      ? Math.min(470, dimensions.height) + "px"
+      : "";
     canvas.style.width = dimensions.width + "px";
     canvas.style.height = dimensions.height + "px";
     for (const node of canvas.querySelectorAll("[data-select-course]")) {
