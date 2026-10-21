@@ -259,20 +259,55 @@
   }
 
   function requirements() {
-    const r = state.planner.requirements;
-    if (state.planner.profile.major === "explore") return "";
-    return `<details class="planner-requirements panel"><summary>Degree progress <span>Self-reported progress</span></summary><div class="requirement-grid"><div><h3>Fundamentals · ${r.fundamentals_done}/6</h3>${r.fundamentals
-      .map((g) => {
-        const inProgress =
-          !g.done &&
-          g.any_of.some((code) =>
-            state.planner.current_courses?.includes(code),
-          );
-        return `<p class="requirement-line ${g.done ? "is-complete" : inProgress ? "is-in-progress" : ""}"><span aria-hidden="true">${g.done ? "✓" : inProgress ? "◷" : "○"}</span>${g.any_of.map(label).map(escape).join(" or ")}${inProgress ? '<small class="requirement-progress-badge">In progress</small>' : ""}</p>`;
-      })
-      .join(
-        "",
-      )}</div><div><h3>Core & electives</h3><p>${r.core_done}/6 core courses · ${r.upper_core_done}/4 at the CSE 400 level</p><p>${r.extra_core_or_capstone_done ? "✓" : "○"} One additional core course or a confirmed capstone</p><p>${r.elective_credits}/33 additional core/elective credits</p><p>${r.science_credits}/5 approved natural science credits</p>${r.science_courses?.length ? `<p class="note">From ${r.science_courses.map(label).map(escape).join(", ")}. Progress is capped at the required 5 credits.</p>` : ""}</div><div><h3>Mathematics · either route</h3>${r.math_routes.map((route) => `<p>${route.done}/${route.courses.length}: ${route.courses.map(label).map(escape).join(", ")}</p>`).join("")}<p class="note">Math and fundamentals below 2.0 do not satisfy these checkpoints. Missing grades require review.</p></div></div><p class="note planner-scope">Based on the published UW CS general catalog and core-course list. This tracks selected major requirements, not general education, total degree credits, GPA, admission status, or an official graduation audit. ${r.variable_credit_review.length ? "Variable-credit courses need their actual section credits recorded under other approved elective credits. " : ""}${sourceLink(state.planner.sources.requirements, "Official degree requirements")} · ${sourceLink(state.planner.sources.core, "Core course list")}</p></details>`;
+    const r = state.planner.requirements,
+      p = state.planner.profile;
+    if (p.major === "explore") return "";
+    const completed = new Map(p.completed.map((c) => [c.code, c.grade]));
+    const current = new Set(state.planner.current_courses || []);
+    const planned = new Set(state.planner.plan.map((c) => c.code));
+    const qualified = (code) =>
+      completed.has(code) &&
+      (completed.get(code) === null || completed.get(code) >= 2);
+    const names = (codes) =>
+      codes.length ? codes.map(label).map(escape).join(", ") : "None yet";
+    const courseRow = (codes, done) => {
+      const active = !done && codes.some((code) => current.has(code));
+      const future =
+        !done && !active && codes.some((code) => planned.has(code));
+      const lowGrade = !done && codes.some((code) => completed.has(code));
+      const text = done
+        ? "Completed"
+        : active
+          ? "In progress"
+          : future
+            ? "Planned"
+            : lowGrade
+              ? "Grade requirement not met"
+              : "Still needed";
+      return `<p class="requirement-line ${done ? "is-complete" : active ? "is-in-progress" : ""}"><span aria-hidden="true">${done ? "✓" : active ? "◷" : future ? "◇" : "○"}</span>${codes.map(label).map(escape).join(" or ")}<small class="requirement-progress-badge">${text}</small></p>`;
+    };
+    const coreActive = state.planner.courses
+      .filter((c) => c.core && current.has(c.code))
+      .map((c) => c.code);
+    const corePlanned = state.planner.courses
+      .filter(
+        (c) =>
+          c.core &&
+          planned.has(c.code) &&
+          !current.has(c.code) &&
+          !completed.has(c.code),
+      )
+      .map((c) => c.code);
+    return `<details class="planner-requirements panel"><summary>Degree progress <span>Completed, in progress & planned</span></summary>
+      <div class="degree-status-summary"><span><b>${completed.size}</b> recorded completed</span><span><b>${current.size}</b> in progress</span><span><b>${[...planned].filter((c) => !current.has(c) && !completed.has(c)).length}</b> planned</span><p class="note">Only qualifying completed courses count toward the totals below. Missing grades are provisional; plans do not guarantee eligibility or offerings.</p></div>
+      <div class="requirement-grid"><section><h3>Fundamentals · ${r.fundamentals_done}/6 completed</h3>${r.fundamentals.map((g) => courseRow(g.any_of, g.done)).join("")}</section>
+      <section><h3>Core & electives</h3><p><b>${r.core_done}/6</b> additional core courses completed · <b>${r.upper_core_done}/4</b> at CSE 400 level</p><p class="note">Counted core courses: ${names(r.core_courses || [])}</p><p class="note">400-level core courses: ${names(r.upper_core_courses || [])}</p><p class="note">In progress: ${names(coreActive)}</p><p class="note">Planned: ${names(corePlanned)}</p><p class="note">Still needed: ${Math.max(0, 6 - r.core_done)} core courses, including ${Math.max(0, 4 - r.upper_core_done)} at CSE 400 level. Choose from the ${sourceLink(state.planner.sources.core, "approved core list")}.</p>
+      <p>${r.extra_core_or_capstone_done ? "✓ Completed" : "○ Still needed"}: one additional core course or confirmed capstone</p><p class="note">${r.core_done >= 7 ? "Satisfied by a seventh completed core course." : p.capstone_confirmed ? "Satisfied by your adviser-confirmed completed capstone." : "The additional course/capstone is separate from the first six core courses."}</p>
+      <p><b>${r.elective_credits}/33</b> additional core/elective credits · ${Math.max(0, 33 - r.elective_credits)} remaining</p><details><summary>See counted elective credits</summary>${(r.elective_courses || []).map((c) => `<p class="note">${escape(label(c.code))}: ${c.credits === null ? "variable credits — enter approved amount separately" : c.credits + " credits"}</p>`).join("") || '<p class="note">No completed elective courses recorded.</p>'}<p class="note">Other approved elective credits entered manually: ${p.other_elective_credits}</p></details>
+      <p class="note degree-exception"><b>Why CSE 331 is excluded:</b> for CS BS it counts under Fundamentals, so it cannot also count toward these additional core courses or elective credits.</p></section>
+      <section><h3>Mathematics · complete either route</h3>${r.math_routes.map((route) => `<div class="math-route"><h4>${route.done}/${route.courses.length} completed${route.done === route.courses.length ? " · Route fulfilled" : ""}</h4>${route.courses.map((code) => courseRow([code], qualified(code))).join("")}</div>`).join("")}<p class="note">Math and fundamentals require at least 2.0. AP/transfer equivalents must be entered explicitly; later courses do not automatically add earlier credit.</p></section>
+      <section><h3>Natural science · ${r.science_credits}/5 credits</h3><p class="note">From recorded courses: ${r.science_course_credits || 0} credits toward the requirement.</p><p class="note">Counted courses: ${names(r.science_courses || [])}</p><p class="note">Other approved credits entered manually: ${p.science_credits}</p><p class="note">Still needed: ${Math.max(0, 5 - r.science_credits)} credits. The combined progress is capped at 5; exclude recorded courses from the manual amount.</p><p class="note">Approved options: PHYS 121 or 141; CHEM 142, 143, or 145; BIOL 180 or awarded BIOL 162 AP credit; or PHYS 116 and 119 together. A partial PHYS 116/119 pair does not count.</p></section></div>
+      <p class="note planner-scope">Selected UW CS BS requirements, based on self-reported history. This is not an official degree audit and excludes general education, total degree credits, GPA, admission rules, and unapproved substitutions. ${r.variable_credit_review.length ? "Variable-credit courses require their approved credit amount entered separately. " : ""}${sourceLink(state.planner.sources.requirements, "Official degree requirements")} · ${sourceLink(state.planner.sources.core, "Core course list")}</p></details>`;
   }
 
   function suggestions() {

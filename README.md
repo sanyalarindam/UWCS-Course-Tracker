@@ -105,6 +105,8 @@ Add PHYS 121 or 141, CHEM 142/143/145, BIOL 180, or awarded BIOL 162 AP credit t
 
 Use **Other approved natural science credits** for adviser-approved credit outside these options, excluding courses already recorded. Previously entered manual science credits are preserved. The [official CS science list](https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/) is narrower than UW's general Natural Sciences designation.
 
+Degree progress separates completed, in-progress, and planned courses. It lists counted core and elective courses, missing math/fundamental courses, remaining core/upper-level requirements, and science credits from recorded courses versus manual entries. Current and planned courses do not increase completed requirement totals.
+
 ### Understand core-course counts
 
 CSE 331 appears on UW's general core-course list with an exception: for **Computer Science BS**, it fulfills a required fundamental and does **not** also count toward the six additional core courses or elective credits. Recording CSE 331 can therefore increase Fundamentals while leaving Core courses at 0/6. The planner follows that CS-specific exception.

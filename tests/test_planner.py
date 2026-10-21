@@ -77,6 +77,8 @@ class PlannerTests(unittest.TestCase):
         r = planner.requirement_progress(CATALOG, p)
         self.assertEqual(r['fundamentals_done'], 6)
         self.assertEqual(r['core_done'], 1)
+        self.assertEqual(r['core_courses'], ['CSE333'])
+        self.assertNotIn('CSE331', [c['code'] for c in r['elective_courses']])
         self.assertEqual(r['elective_credits'], COURSES['CSE333']['credits'])
         self.assertIn('CSE480', r['variable_credit_review'])
         p['completed'] = [{'code': 'CSE333', 'grade': 0}]

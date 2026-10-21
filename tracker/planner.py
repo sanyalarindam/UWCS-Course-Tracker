@@ -97,7 +97,7 @@ def requirement_progress(catalog, profile):
     science_options = [option for option in catalog.get('science_options', []) if set(option['all_of']).issubset(codes)]
     science_from_courses = min(5, sum(option['credits'] for option in science_options))
     return {'fundamentals': fundamentals, 'fundamentals_done': sum(g['done'] for g in fundamentals),
-            'core_done': len(core), 'upper_core_done': len(upper), 'elective_credits': credits,
+            'core_done': len(core), 'core_courses': [c['code'] for c in core], 'upper_core_courses': [c['code'] for c in upper], 'elective_courses': [{'code': c['code'], 'credits': c['credits']} for c in elective], 'upper_core_done': len(upper), 'elective_credits': credits,
             'extra_core_or_capstone_done': len(core) >= 7 or profile['capstone_confirmed'],
             'science_credits': min(5, science_from_courses + profile['science_credits']), 'science_course_credits': science_from_courses, 'science_courses': sorted({code for option in science_options for code in option['all_of']}), 'math_routes': routes,
             'grade_review': [r['code'] for r in profile['completed'] if r['grade'] is None],
