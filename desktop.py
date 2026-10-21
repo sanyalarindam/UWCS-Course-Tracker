@@ -1,4 +1,4 @@
-"""Windowed entry point for the standalone Windows distribution."""
+"""Windowed entry point for the standalone desktop distributions."""
 import json
 import logging
 import sys
@@ -13,6 +13,8 @@ import app
 def smoke_test():
     import tempfile
     import webview
+    if sys.platform == 'darwin':
+        import webview.platforms.cocoa  # Validate bundled PyObjC/WebKit dependencies.
     with tempfile.TemporaryDirectory() as directory:
         application = app.Application(directory)
         server = ThreadingHTTPServer(('127.0.0.1', 0), app.make_handler(application))
@@ -49,8 +51,16 @@ def main():
         app.main()
     except Exception:
         logging.exception('Desktop startup failed')
-        import ctypes
-        ctypes.windll.user32.MessageBoxW(None, f'CS Tracker could not start. See {directory / "desktop.log"} for details.\n\nMake sure Microsoft Edge WebView2 Runtime is installed.', 'CS Tracker', 0x10)
+        message = f'CS Tracker could not start. See {directory / "desktop.log"} for details.'
+        if sys.platform == 'win32':
+            import ctypes
+            ctypes.windll.user32.MessageBoxW(None, message + '\n\nMake sure Microsoft Edge WebView2 Runtime is installed.', 'CS Tracker', 0x10)
+        elif sys.platform == 'darwin':
+            from AppKit import NSAlert
+            alert = NSAlert.alloc().init()
+            alert.setMessageText_('CS Tracker could not start')
+            alert.setInformativeText_(message)
+            alert.runModal()
         raise
     finally:
         log.close()

@@ -13,6 +13,7 @@ def build(output):
     points = [(155,270),(295,270),(386,652),(467,340),(564,340),(646,652),(734,270),(870,270),(704,765),(584,765),(515,509),(443,765),(324,765)]
     draw.polygon(points, fill='#FFFFFF')
     image.save(output / 'app.png')
+    image.save(output / 'app.icns')
     image.save(output / 'app.ico', sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])
 
 

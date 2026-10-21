@@ -2,7 +2,7 @@
 
 A local course dashboard for University of Washington CSE students. Bring public course schedules, assignments, exams, and class materials into one workspace, with your notes and progress saved on your own device.
 
-**Status:** working prototype, verified against CSE 123, 311, 351, 331, 332, and 312 for Autumn 2026. Runs with Python on Windows, macOS, and Linux; a standalone Windows x64 installer is built by GitHub Actions. Mobile installers are not included.
+**Status:** working prototype, verified against CSE 123, 311, 351, 331, 332, and 312 for Autumn 2026. Runs with Python on Windows, macOS, and Linux; standalone Windows x64 and macOS (Apple Silicon and Intel) installers are built by GitHub Actions. Mobile installers are not included.
 
 ## Features
 
@@ -56,7 +56,35 @@ python -m pip install -r requirements-desktop.txt
 
 The build creates `dist/CS Tracker/CS Tracker.exe` and `dist/installer/CS-Tracker-Setup-0.2.0-Windows-x64.exe`. It smoke-tests the bundled server, planner data, and UI assets before compiling Setup. The WebView2 bootstrapper is downloaded from Microsoft and its Authenticode signature is verified before inclusion. Only app source, UI, and catalog/calendar snapshots are bundled; local workspaces, cached slides, backups, and credentials are excluded.
 
-The **Windows installer** workflow runs on relevant pushes to `main` or manual dispatch. It tests the app, packages it, uploads a workflow artifact, and publishes a versioned GitHub release with the installer and checksums. The workflow uses a fresh Windows runner and does not upload local development data. macOS/Linux users can still run the source version below; installers for those platforms are not provided yet.
+The **Desktop installers** workflow runs on relevant pushes to `main` or manual dispatch. It tests the app, packages it, uploads a workflow artifact, and publishes a versioned GitHub release with the installer and checksums. The workflow uses a fresh Windows runner and does not upload local development data. Windows and both Mac architectures are published together, with shared checksums, only after all builds pass. Linux users can run the source version below.
+
+## Install the macOS app
+
+Open [GitHub Releases](https://github.com/sanyalarindam/UWCS-Course-Tracker/releases/latest) and select the DMG matching your Mac:
+
+| Mac | Download filename |
+| --- | --- |
+| Apple Silicon (M1/M2/M3/M4 and later) | `CS-Tracker-VERSION-macOS-arm64.dmg` |
+| Intel | `CS-Tracker-VERSION-macOS-x86_64.dmg` |
+
+Requires **macOS 15 or later**. Open the DMG, drag **CS Tracker.app** to **Applications**, then eject the disk image and launch the app. Python, Git, and WebView2 are not required: Python is bundled and the app uses macOS WebKit. The app includes its purple W icon.
+
+These initial builds are ad-hoc signed for bundle integrity, **not signed with an Apple Developer ID or notarized**. macOS may block the first launch. Consult [Apple's guidance for unidentified developers](https://support.apple.com/102445) and decide whether you trust the download; the installer does not disable Gatekeeper or change system security settings.
+
+Your workspace is stored at `~/Library/Application Support/UWCS Tracker`, separately from the app bundle. To update, quit CS Tracker and replace the application with the version from the latest matching DMG. Replacing or deleting the app preserves the workspace. Use JSON backup export/import to move data from another device or a custom development data directory.
+
+### Build a macOS DMG
+
+Build on a Mac matching the target architecture, with Python 3.12:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-desktop.txt
+python packaging/build-macos.py
+```
+
+The build creates `dist/CS Tracker.app` and an architecture-specific DMG in `dist/installer/`. GitHub Actions builds on native Apple Silicon and Intel runners, tests the application, smoke-tests the bundled local server and Cocoa/WebKit imports, verifies the app's ad-hoc signature and DMG integrity, and uploads the installers to the release. No personal data is packaged. HTTPS certificate roots are bundled for course downloads.
 
 ## Run from source
 

@@ -44,7 +44,13 @@ def fetch(url, limit=25_000_000):
     if not allowed_url(url):
         raise ValueError('Only public HTTPS pages on courses.cs.washington.edu and www.washington.edu can be downloaded.')
     request = urllib.request.Request(url, headers={'User-Agent': 'UWCS-Tracker/0.1 (personal course agenda)'})
-    with urllib.request.build_opener(UWRedirect()).open(request, timeout=25) as response:
+    import ssl
+    try:
+        import certifi
+        context = ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        context = ssl.create_default_context()
+    with urllib.request.build_opener(UWRedirect(), urllib.request.HTTPSHandler(context=context)).open(request, timeout=25) as response:
         data = response.read(limit + 1)
         if len(data) > limit:
             raise ValueError('Document is too large for local analysis (25 MB limit).')
