@@ -10,7 +10,10 @@ A local course dashboard for University of Washington CSE students. Bring public
 - Adds past and future courses by course code, quarter, and year.
 - Imports deadlines, exams, and links to slides, readings, recordings, the syllabus, and Gradescope from supported public course pages.
 - Provides a current-courses dashboard, combined agenda, and searchable materials library.
-- Includes a local CS BS course planner with a prerequisite web, interest-based suggestions, requirement checkpoints, and future-quarter plans.
+- Includes a local UW Seattle CS BS planner with a course map, personalized suggestions, degree progress, and future-quarter plans.
+- Searches all 75 mapped courses from any map view, including courses you have not taken.
+- Uses current-quarter enrollments provisionally for future planning and labels in-progress fundamental requirements.
+- Automatically counts approved completed natural science courses toward the five-credit CS science requirement.
 - Includes light, dark, and device-controlled themes, with your preference saved locally across restarts.
 - Saves personal completion checkboxes and course notes in SQLite.
 - Optionally analyzes the two most recent PDF slide decks when importing a course; other decks can be analyzed individually.
@@ -80,7 +83,7 @@ The bundled catalog snapshot contains 75 courses and supporting prerequisite nod
 
 Completed history is self-reported, separate from assignment checkboxes and imported schedules. Future-quarter suggestions and course-map readiness provisionally include imported courses from the current UW quarter, with successful-completion assumptions shown. They do not increase degree progress or change completed history. Later planned quarters also consider valid earlier plans, with those assumptions shown. Same-quarter prerequisites do not qualify. Minimum grades are checked where modeled; missing grades prompt review. A tentative plan never confirms an offering, registration eligibility, or seat availability.
 
-Checkpoints cover fundamentals, math routes, core counts, upper-level core counts, additional core/capstone, selected elective credits, and self-reported approved science credits. They do not replace a degree audit: general education, total degree credits, GPA, admission restrictions, substitutions, section-specific rules, and adviser approvals are not evaluated. Variable-credit courses need actual approved credits entered separately. History, interests, and plans are stored locally and included in JSON backups; importing a backup with planner data replaces the planner profile and plan. Older backups preserve existing planner data.
+Checkpoints cover fundamentals, math routes, core counts, upper-level core counts, additional core/capstone, selected elective credits, and natural science credits calculated from recorded courses plus other self-reported approved credits. They do not replace a degree audit: general education, total degree credits, GPA, admission restrictions, substitutions, section-specific rules, and adviser approvals are not evaluated. Variable-credit courses need actual approved credits entered separately. History, interests, and plans are stored locally and included in JSON backups; importing a backup with planner data replaces the planner profile and plan. Older backups preserve existing planner data.
 
 ### Understand degree progress
 
@@ -96,13 +99,21 @@ Degree progress counts **completed courses recorded in your history**, rather th
 
 ### Record natural science courses
 
+Open **Course planner → Course history & interests → Completed courses**, enter a course code and optional grade, then click **Add / update**. No schedule import is needed for completed science courses.
+
 Add PHYS 121 or 141, CHEM 142/143/145, BIOL 180, or awarded BIOL 162 AP credit through **Completed courses**. They automatically contribute to the CS natural science requirement. PHYS 116 and PHYS 119 count only when both are completed. Removing a completion removes its contribution; failed courses do not count. Progress is capped at the required five credits.
 
 Use **Other approved natural science credits** for adviser-approved credit outside these options, excluding courses already recorded. Previously entered manual science credits are preserved. The [official CS science list](https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/) is narrower than UW's general Natural Sciences designation.
 
+### Understand core-course counts
+
+CSE 331 appears on UW's general core-course list with an exception: for **Computer Science BS**, it fulfills a required fundamental and does **not** also count toward the six additional core courses or elective credits. Recording CSE 331 can therefore increase Fundamentals while leaving Core courses at 0/6. The planner follows that CS-specific exception.
+
 ### Plan around courses in progress
 
 Import your current-quarter course schedules under **Current courses**, then select a future quarter in the planner. A course can show **Ready after current courses** when its prerequisites include your current enrollments. For example, CSE 312 in progress can satisfy that prerequisite provisionally for a later CSE 446 plan, provided its other prerequisites are met.
+
+In **Degree progress**, a current fundamental such as CSE 312 displays a clock symbol and **In progress** badge instead of an empty circle. It does not increase the completed count until you record completion.
 
 These checks assume successful completion, including any required minimum grade. They do not mark the current course completed or increase degree progress. Current-quarter courses do not satisfy prior-course prerequisites for plans in that same quarter. **Offering unverified** means the plan has not established that the course will be offered in that quarter; schedule imports still run the separate offering check.
 
