@@ -46,6 +46,7 @@ jobs:
     timeout-minutes: 30
     env:
       MAC_ARCH: ${{ matrix.arch }}
+      MACOSX_DEPLOYMENT_TARGET: '14.0'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -84,6 +85,6 @@ jobs:
           sha256sum -- *.exe *.dmg > SHA256SUMS.txt
           tag="v$APP_VERSION"
           if ! gh release view "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" --target "$GITHUB_SHA" --title "CS Tracker $APP_VERSION — Windows & macOS" --notes 'Standalone installers: Windows x64 EXE, Apple Silicon arm64 DMG, and Intel x86_64 DMG. No separate Python installation required. macOS 15+; drag the app to Applications. Mac builds are ad-hoc signed, not Developer ID signed or notarized; macOS may block first launch. Windows installer remains unsigned. Personal workspace data stays on your device and is preserved on updates/uninstall.'
+            gh release create "$tag" --target "$GITHUB_SHA" --title "CS Tracker $APP_VERSION — Windows & macOS" --notes 'Standalone installers: Windows x64 EXE, Apple Silicon arm64 DMG, and Intel x86_64 DMG. No separate Python installation required. macOS 14 Sonoma+ (including 14.7.3); drag the app to Applications. Mac builds are ad-hoc signed, not Developer ID signed or notarized; macOS may block first launch. Windows installer remains unsigned. Personal workspace data stays on your device and is preserved on updates/uninstall.'
           fi
           gh release upload "$tag" --clobber -- *.exe *.dmg SHA256SUMS.txt

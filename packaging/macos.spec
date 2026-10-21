@@ -24,6 +24,6 @@ app = BUNDLE(coll, name='CS Tracker.app',
         'CFBundleShortVersionString':os.environ.get('APP_VERSION','0.3.0'),
         'CFBundleVersion':os.environ.get('APP_VERSION','0.3.0'),
         'NSHighResolutionCapable':True,
-        'LSMinimumSystemVersion':'15.0',
+        'LSMinimumSystemVersion':'14.0',
         'NSAppTransportSecurity':{'NSAllowsLocalNetworking':True},
     })

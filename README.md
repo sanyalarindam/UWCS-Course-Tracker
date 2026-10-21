@@ -77,7 +77,7 @@ Open [GitHub Releases](https://github.com/sanyalarindam/UWCS-Course-Tracker/rele
 | Apple Silicon (M1/M2/M3/M4 and later) | `CS-Tracker-VERSION-macOS-arm64.dmg` |
 | Intel | `CS-Tracker-VERSION-macOS-x86_64.dmg` |
 
-Requires **macOS 15 or later**. Open the DMG, drag **CS Tracker.app** to **Applications**, then eject the disk image and launch the app. Python, Git, and WebView2 are not required: Python is bundled and the app uses macOS WebKit. The app includes the shared logo used by the interface and installers.
+Requires **macOS 14 (Sonoma) or later**, including **Sonoma 14.7.3**. Open the DMG, drag **CS Tracker.app** to **Applications**, then eject the disk image and launch the app. Python, Git, and WebView2 are not required: Python is bundled and the app uses macOS WebKit. The app includes the shared logo used by the interface and installers.
 
 These initial builds are ad-hoc signed for bundle integrity, **not signed with an Apple Developer ID or notarized**. macOS may block the first launch. Consult [Apple's guidance for unidentified developers](https://support.apple.com/102445) and decide whether you trust the download; the installer does not disable Gatekeeper or change system security settings.
 
@@ -94,7 +94,7 @@ python -m pip install -r requirements-desktop.txt
 python packaging/build-macos.py
 ```
 
-The build creates `dist/CS Tracker.app` and an architecture-specific DMG in `dist/installer/`. GitHub Actions builds on native Apple Silicon and Intel runners, tests the application, smoke-tests the bundled local server and Cocoa/WebKit imports, verifies the app's ad-hoc signature and DMG integrity, and uploads the installers to the release. No personal data is packaged. HTTPS certificate roots are bundled for course downloads.
+The build creates `dist/CS Tracker.app` and an architecture-specific DMG in `dist/installer/`. GitHub Actions builds on native Apple Silicon and Intel runners, tests the application, smoke-tests the bundled local server and Cocoa/WebKit imports, checks that the app and every bundled native binary declare a minimum macOS version no higher than 14.0, verifies the app's ad-hoc signature and DMG integrity, and uploads the installers to the release. No personal data is packaged. HTTPS certificate roots are bundled for course downloads. Builds target macOS 14.0; automated launch checks currently run on macOS 15, so interactive testing on Sonoma remains limited. Older downloads that require macOS 15 must be replaced with the latest installer.
 
 ## Run from source
 
