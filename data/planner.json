@@ -1,0 +1,1512 @@
+{
+  "version": "2026-10-20",
+  "sources": {
+    "catalog": "https://www.washington.edu/students/crscat/cse.html",
+    "requirements": "https://www.washington.edu/students/gencat/program/S/ComputerScience-210.html",
+    "core": "https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/",
+    "pathways": "https://www.cs.washington.edu/academics/undergraduate/degree-requirements/computing-specializations/"
+  },
+  "interests": [
+    {
+      "id": "software",
+      "label": "Software engineering"
+    },
+    {
+      "id": "systems",
+      "label": "Systems & networks"
+    },
+    {
+      "id": "ai",
+      "label": "AI & machine learning"
+    },
+    {
+      "id": "data",
+      "label": "Data & databases"
+    },
+    {
+      "id": "theory",
+      "label": "Algorithms & theory"
+    },
+    {
+      "id": "hci",
+      "label": "Design & HCI"
+    },
+    {
+      "id": "security",
+      "label": "Security"
+    },
+    {
+      "id": "hardware",
+      "label": "Hardware & robotics"
+    }
+  ],
+  "fundamentals": [
+    [
+      "CSE123",
+      "CSE143"
+    ],
+    [
+      "CSE311"
+    ],
+    [
+      "CSE312"
+    ],
+    [
+      "CSE331"
+    ],
+    [
+      "CSE332"
+    ],
+    [
+      "CSE351"
+    ]
+  ],
+  "math_routes": [
+    [
+      "MATH124",
+      "MATH125",
+      "MATH126",
+      "MATH208"
+    ],
+    [
+      "MATH134",
+      "MATH135",
+      "MATH136"
+    ]
+  ],
+  "requirements": {
+    "core_courses": 6,
+    "upper_core_courses": 4,
+    "elective_credits": 33,
+    "science_credits": 5,
+    "extra_core_or_capstone": 1
+  },
+  "courses": [
+    {
+      "code": "CSE121",
+      "name": "Introduction to Computer Programming I",
+      "credits": 4,
+      "tags": [
+        "software"
+      ],
+      "prerequisites": [],
+      "prerequisite_text": "No formal prerequisite is listed in this catalog entry. Prior programming experience or placement may still be needed.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse121",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE122",
+      "name": "Introduction to Computer Programming II",
+      "credits": 4,
+      "tags": [
+        "software"
+      ],
+      "prerequisites": [],
+      "prerequisite_text": "No formal prerequisite is listed in this catalog entry. Prior programming experience or placement may still be needed.",
+      "recommended": [
+        "CSE121"
+      ],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse122",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE123",
+      "name": "Introduction to Computer Programming III",
+      "credits": 4,
+      "tags": [
+        "software"
+      ],
+      "prerequisites": [],
+      "prerequisite_text": "No formal prerequisite is listed in this catalog entry. Prior programming experience or placement may still be needed.",
+      "recommended": [
+        "CSE122"
+      ],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse123",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE143",
+      "name": "Computer Programming II",
+      "credits": 5,
+      "tags": [
+        "software"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE142"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 142.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse143",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE311",
+      "name": "Foundations of Computing I",
+      "credits": 4,
+      "tags": [
+        "theory"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE123",
+            "CSE143"
+          ],
+          "minimum_grade": 2.0
+        },
+        {
+          "any_of": [
+            "MATH126",
+            "MATH135"
+          ],
+          "minimum_grade": 2.0
+        }
+      ],
+      "prerequisite_text": "a minimum grade of 2.0 in either CSE 123 or CSE 143; and a minimum grade of 2.0 in MATH 126 or MATH 135.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse311",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE312",
+      "name": "Foundations of Computing II",
+      "credits": 4,
+      "tags": [
+        "theory",
+        "ai"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE311"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 311.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse312",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE331",
+      "name": "Software Design and Implementation",
+      "credits": 4,
+      "tags": [
+        "software"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE123",
+            "CSE143"
+          ],
+          "minimum_grade": 2.0
+        }
+      ],
+      "prerequisite_text": "a minimum grade of 2.0 in either CSE 123 or CSE 143.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse331",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE332",
+      "name": "Data Structures and Parallelism",
+      "credits": 4,
+      "tags": [
+        "software",
+        "theory"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE311"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 311.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse332",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE333",
+      "name": "Systems Programming",
+      "credits": 4,
+      "tags": [
+        "systems"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE351"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 351.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse333",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE340",
+      "name": "Interaction Programming",
+      "credits": 4,
+      "tags": [
+        "hci"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE123",
+            "CSE143"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 123 or CSE 143.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse340",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE341",
+      "name": "Programming Languages",
+      "credits": 4,
+      "tags": [
+        "software",
+        "theory"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE123",
+            "CSE143"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 123 or CSE 143.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse341",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE344",
+      "name": "Introduction to Data Management",
+      "credits": 4,
+      "tags": [
+        "data"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE311"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 311.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse344",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE351",
+      "name": "The Hardware/Software Interface",
+      "credits": 4,
+      "tags": [
+        "systems",
+        "hardware"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE123",
+            "CSE143"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 123 or CSE 143.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse351",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE369",
+      "name": "Introduction to Digital Design",
+      "credits": 3,
+      "tags": [
+        "hardware"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE311"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 311.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse369",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE371",
+      "name": "Design of Digital Circuits and Systems",
+      "credits": 5,
+      "tags": [
+        "hardware"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "EE205",
+            "EE215"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "EE271",
+            "CSE369"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "either E E 205 or E E 215; either E E 271 or CSE 369.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse371",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE391",
+      "name": "System and Software Tools",
+      "credits": 1,
+      "tags": [
+        "systems",
+        "software"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE122",
+            "CSE123",
+            "CSE143"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "either CSE 122, CSE 123, or CSE 143. Credit/no-credit only.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse391",
+      "core": false,
+      "notes": ""
+    },
+    {
+      "code": "CSE401",
+      "name": "Introduction to Compiler Construction",
+      "credits": 4,
+      "tags": [
+        "software",
+        "systems"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE351"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332 and CSE 351.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse401",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE403",
+      "name": "Software Engineering",
+      "credits": 4,
+      "tags": [
+        "software"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE331"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 331; CSE 332.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse403",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE421",
+      "name": "Introduction to Algorithms",
+      "credits": 3,
+      "tags": [
+        "theory"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE312"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 312; CSE 332.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse421",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE422",
+      "name": "Toolkit for Modern Algorithms",
+      "credits": 3,
+      "tags": [
+        "theory"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE312"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "MATH136",
+            "MATH208"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 312; CSE 332; and MATH 136 or MATH 208.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse422",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE426",
+      "name": "Cryptography",
+      "credits": 4,
+      "tags": [
+        "security",
+        "theory"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE312"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 312.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse426",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE427",
+      "name": "Computational Biology",
+      "credits": 3,
+      "tags": [
+        "ai",
+        "data"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE312"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 312; CSE 332.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse427",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE431",
+      "name": "Introduction to Theory of Computation",
+      "credits": 3,
+      "tags": [
+        "theory"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE312"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 312.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse431",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE440",
+      "name": "Introduction to HCI: User Interface Design, Prototyping, and Evaluation",
+      "credits": 5,
+      "tags": [
+        "hci"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse440",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE442",
+      "name": "Data Visualization",
+      "credits": 4,
+      "tags": [
+        "data",
+        "hci"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse442",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE443",
+      "name": "Digital Accessibility",
+      "credits": 4,
+      "tags": [
+        "hci"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE340"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 340.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse443",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE444",
+      "name": "Database Systems Internals",
+      "credits": 4,
+      "tags": [
+        "data",
+        "systems"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE344",
+            "CSE414"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332; and either CSE 344 or CSE 414.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse444",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE446",
+      "name": "Machine Learning",
+      "credits": 4,
+      "tags": [
+        "ai",
+        "data"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "MATH208",
+            "MATH136"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "STAT390",
+            "STAT391",
+            "CSE312"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332; MATH 208 or MATH 136; and either STAT 390, STAT 391, or CSE 312.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse446",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE447",
+      "name": "Natural Language Processing",
+      "credits": 4,
+      "tags": [
+        "ai"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE312"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 312 and CSE 332; recommended: MATH 208; and CSE 446 is recommended before or concurrently.",
+      "recommended": [
+        "MATH208",
+        "CSE446"
+      ],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse447",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE451",
+      "name": "Introduction to Operating Systems",
+      "credits": 4,
+      "tags": [
+        "systems"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE333"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE351"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332; CSE 333; and CSE 351.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse451",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE452",
+      "name": "Introduction to Distributed Systems",
+      "credits": 4,
+      "tags": [
+        "systems"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE333"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332 and CSE 333. ; recommended: CSE 451",
+      "recommended": [
+        "CSE451"
+      ],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse452",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE453",
+      "name": "Datacenter Systems",
+      "credits": 4,
+      "tags": [
+        "systems"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE333"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332 and CSE 333; recommended: CSE 451 or CSE 452.",
+      "recommended": [
+        "CSE451",
+        "CSE452"
+      ],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse453",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE455",
+      "name": "Computer Vision",
+      "credits": 4,
+      "tags": [
+        "ai"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse455",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE457",
+      "name": "Computer Graphics",
+      "credits": 4,
+      "tags": [
+        "hci"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse457",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE461",
+      "name": "Introduction to Computer-Communication Networks",
+      "credits": 4,
+      "tags": [
+        "systems"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE326",
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE303",
+            "CSE333"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "either CSE 326 or CSE 332; either CSE 303 or CSE 333.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse461",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE469",
+      "name": "Computer Architecture I",
+      "credits": 5,
+      "tags": [
+        "hardware"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "EE271",
+            "CSE369"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE123",
+            "CSE143"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "either E E 271 or CSE 369;  and either CSE 123 or CSE 143.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse469",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE470",
+      "name": "Computer Architecture II",
+      "credits": 4,
+      "tags": [
+        "hardware"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE469",
+            "EE469"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "either CSE 469 or E E 469.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse470",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE473",
+      "name": "Artificial Intelligence",
+      "credits": 3,
+      "tags": [
+        "ai"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE312"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 312 and CSE 332.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse473",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE474",
+      "name": "Introduction to Embedded Systems",
+      "credits": 4,
+      "tags": [
+        "hardware"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE123",
+            "CSE143"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 123 or CSE 143",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse474",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE478",
+      "name": "Autonomous Robotics",
+      "credits": 4,
+      "tags": [
+        "ai",
+        "hardware"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332; recommended: CSE 312; MATH 208.",
+      "recommended": [
+        "CSE312",
+        "MATH208"
+      ],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse478",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE480",
+      "name": "Computer Ethics Seminar",
+      "credits": null,
+      "tags": [
+        "hci"
+      ],
+      "prerequisites": [],
+      "prerequisite_text": "No formal prerequisite is listed in this catalog entry. Prior programming experience or placement may still be needed.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse480",
+      "core": false,
+      "notes": "Credit varies; verify the credits for your section."
+    },
+    {
+      "code": "CSE484",
+      "name": "Computer Security",
+      "credits": 4,
+      "tags": [
+        "security",
+        "systems"
+      ],
+      "prerequisites": [
+        {
+          "any_of": [
+            "CSE332"
+          ],
+          "minimum_grade": null
+        },
+        {
+          "any_of": [
+            "CSE351"
+          ],
+          "minimum_grade": null
+        }
+      ],
+      "prerequisite_text": "CSE 332; CSE 351.",
+      "recommended": [],
+      "external": false,
+      "modeled": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse484",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE402",
+      "name": "Design and Implementation of Domain-Specific Languages",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "CSE 332 and CSE 351.",
+      "recommended": [],
+      "external": false,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse402",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE434",
+      "name": "Introduction to Quantum Computation",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "CSE 312; and MATH 136 or MATH 208.",
+      "recommended": [],
+      "external": false,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse434",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE438",
+      "name": "Computational Neuroscience",
+      "credits": 3,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "MATH 126 or MATH 136; MATH 208; and CSE 312.",
+      "recommended": [],
+      "external": false,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse438",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE458",
+      "name": "Computer Animation",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "CSE 457.",
+      "recommended": [],
+      "external": false,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse458",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE462",
+      "name": "Wireless Communication",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "CSE 333;  and MATH 136 or MATH 208.",
+      "recommended": [],
+      "external": false,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse462",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE486",
+      "name": "Introduction to Synthetic Biology",
+      "credits": 3,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "either MATH 136, MATH 207, MATH 307, AMATH 351, or CSE 311; and either MATH 208, MATH 308, or AMATH 352.",
+      "recommended": [],
+      "external": false,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse486",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "CSE493",
+      "name": "Advanced Special Topics in Computer Science and Engineering",
+      "credits": null,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "No formal prerequisite is listed in this catalog entry. Prior programming experience or placement may still be needed.",
+      "recommended": [],
+      "external": false,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse493",
+      "core": true,
+      "notes": ""
+    },
+    {
+      "code": "MATH124",
+      "name": "Calculus with Analytic Geometry I",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/math.html#math124",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "MATH125",
+      "name": "Calculus with Analytic Geometry II",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/math.html#math125",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "MATH126",
+      "name": "Calculus with Analytic Geometry III",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/math.html#math126",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "MATH134",
+      "name": "Accelerated Honors Calculus I",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/math.html#math134",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "MATH135",
+      "name": "Accelerated Honors Calculus II",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/math.html#math135",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "MATH136",
+      "name": "Accelerated Honors Calculus III",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/math.html#math136",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "MATH208",
+      "name": "Matrix Algebra",
+      "credits": 3,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/math.html#math208",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "STAT390",
+      "name": "Statistical Methods in Engineering and Science",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/stat.html#stat390",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "STAT391",
+      "name": "Probability and Statistics for Computer Science",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/stat.html#stat391",
+      "core": true,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "EE205",
+      "name": "Introduction to Signal Conditioning",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/ee.html#ee205",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "EE215",
+      "name": "Introduction to Electrical Engineering",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/ee.html#ee215",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "EE271",
+      "name": "Digital Circuits and Systems",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/ee.html#ee271",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "EE469",
+      "name": "Computer Architecture I",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/ee.html#ee469",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "CSE142",
+      "name": "Computer Programming I (legacy alternative)",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse142",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "CSE303",
+      "name": "Legacy systems prerequisite",
+      "credits": null,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse303",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "CSE326",
+      "name": "Legacy data structures prerequisite",
+      "credits": null,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse326",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "CSE414",
+      "name": "Introduction to Database Systems",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "External or alternative course. Its own prerequisites are not modeled; check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "source": "https://www.washington.edu/students/crscat/cse.html#cse414",
+      "core": false,
+      "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    }
+  ]
+}

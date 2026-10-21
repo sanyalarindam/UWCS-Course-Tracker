@@ -138,6 +138,21 @@ class ServerTests(unittest.TestCase):
                 self.assertEqual(state['preferences']['theme'], 'system')
                 with urllib.request.urlopen(base + '/theme.js') as response:
                     self.assertIn(b'prefers-color-scheme', response.read())
+                for endpoint, payload in [('/api/planner/profile', {'major':'cs','completed':[{'code':'CSE123','grade':3.5}],'interests':['ai']}), ('/api/planner/plan', [{'code':'CSE311','quarter':'Winter','year':2027}])]:
+                    request = urllib.request.Request(base + endpoint, data=json.dumps(payload).encode(), headers={'Content-Type':'application/json','X-UWCS-Token':state['token']})
+                    with urllib.request.urlopen(request) as response:
+                        self.assertEqual(response.status, 200)
+                self.assertEqual(application.state()['planner']['profile']['interests'], ['ai'])
+                self.assertEqual(application.state()['planner']['plan'][0]['code'], 'CSE311')
+                self.assertEqual(application.store.courses(), [])
+                invalid_plan = urllib.request.Request(base + '/api/planner/plan', data=b'[{"code":"CSE999","quarter":"Winter","year":2027}]', headers={'Content-Type':'application/json','X-UWCS-Token':state['token']})
+                with self.assertRaises(urllib.error.HTTPError) as invalid:
+                    urllib.request.urlopen(invalid_plan)
+                self.assertEqual(invalid.exception.code, 400)
+                self.assertEqual(application.store.get('planner_plan')[0]['code'], 'CSE311')
+                for path in ('/planner.js', '/planner.css'):
+                    with urllib.request.urlopen(base + path) as response:
+                        self.assertEqual(response.status, 200)
                 theme_request = urllib.request.Request(base + '/api/preferences', data=b'{"theme":"dark"}', headers={'Content-Type': 'application/json', 'X-UWCS-Token': state['token']})
                 with urllib.request.urlopen(theme_request) as response:
                     self.assertEqual(response.status, 200)
@@ -145,6 +160,7 @@ class ServerTests(unittest.TestCase):
                     self.assertIn(b'data-theme-preference="dark"', response.read())
                 reopened = app.Application(directory)
                 self.assertEqual(reopened.state()['preferences']['theme'], 'dark')
+                self.assertEqual(reopened.state()['planner']['profile']['completed'][0]['code'], 'CSE123')
                 reopened.pool.shutdown()
                 invalid_theme = urllib.request.Request(base + '/api/preferences', data=b'{"theme":"purple"}', headers={'Content-Type': 'application/json', 'X-UWCS-Token': state['token']})
                 with self.assertRaises(urllib.error.HTTPError) as invalid:

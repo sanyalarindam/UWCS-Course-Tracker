@@ -20,6 +20,7 @@ try:
     from tracker.store import Store
     from tracker.courses import COURSES, load_course
     from tracker.availability import AvailabilityChecker, CourseAvailabilityError
+    from tracker import planner
 except ImportError:
     raise SystemExit('Install dependencies first: python -m pip install --target .deps -r requirements.txt')
 
@@ -32,6 +33,7 @@ class Application:
         self.jobs = {}
         self.lock = threading.Lock()
         self.availability = AvailabilityChecker()
+        self.planner_catalog = json.loads((ROOT / 'data/planner.json').read_text(encoding='utf-8'))
         if not self.store.get('terms'):
             seed = ROOT / 'data' / 'calendar.json'
             if seed.exists():
@@ -39,7 +41,10 @@ class Application:
 
     def state(self):
         today = importer.today_seattle()
-        return {'courses': self.store.courses(), 'catalog': COURSES, 'completions': self.store.completions(), 'analyses': self.store.analyses(), 'term': importer.current_term(self.store.get('terms', []), today), 'terms': self.store.get('terms', []), 'today': today.isoformat(), 'data_path': str(self.store.directory), 'calendar_checked': self.store.get('calendar_checked'), 'calendar_source': importer.CALENDAR_URL, 'preferences': {'theme': self.store.get('theme', 'system')}, 'token': self.token}
+        courses = self.store.courses()
+        term = importer.current_term(self.store.get('terms', []), today)
+        planning = planner.build_state(self.planner_catalog, self.store.get('planner_profile', planner.default_profile()), self.store.get('planner_plan', []), courses, term)
+        return {'courses': courses, 'catalog': COURSES, 'planner': planning, 'completions': self.store.completions(), 'analyses': self.store.analyses(), 'term': term, 'terms': self.store.get('terms', []), 'today': today.isoformat(), 'data_path': str(self.store.directory), 'calendar_checked': self.store.get('calendar_checked'), 'calendar_source': importer.CALENDAR_URL, 'preferences': {'theme': self.store.get('theme', 'system')}, 'token': self.token}
 
     def job(self, fn):
         key = secrets.token_hex(8)
@@ -174,7 +179,7 @@ def make_handler(app):
                     if cached.exists():
                         return self.send(cached.read_bytes(), content_type='application/pdf')
                 return self.send({'error': 'Cached PDF not found'}, 404)
-            files = {'/': ('index.html', 'text/html; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/theme.js': ('theme.js', 'text/javascript; charset=utf-8'), '/styles.css': ('styles.css', 'text/css; charset=utf-8')}
+            files = {'/': ('index.html', 'text/html; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/theme.js': ('theme.js', 'text/javascript; charset=utf-8'), '/planner.js': ('planner.js', 'text/javascript; charset=utf-8'), '/planner.css': ('planner.css', 'text/css; charset=utf-8'), '/styles.css': ('styles.css', 'text/css; charset=utf-8')}
             if path in files:
                 name, mime = files[path]
                 content = (ROOT / 'web' / name).read_bytes()
@@ -194,6 +199,15 @@ def make_handler(app):
                 if not 0 < size <= 10_000_000:
                     raise ValueError('Request must be between 1 byte and 10 MB.')
                 args = json.loads(self.rfile.read(size))
+                if self.path in ('/api/planner/profile', '/api/planner/plan'):
+                    profile = planner.normalize_profile(args if self.path.endswith('/profile') else app.store.get('planner_profile', planner.default_profile()), app.planner_catalog)
+                    plan = planner.normalize_plan(args if self.path.endswith('/plan') else app.store.get('planner_plan', []), app.planner_catalog)
+                    completed = {c['code'] for c in profile['completed']}
+                    if self.path.endswith('/plan') and any(p['code'] in completed for p in plan):
+                        raise ValueError('This course is already recorded as completed. Remove that completion before planning a retake.')
+                    plan = [p for p in plan if p['code'] not in completed]
+                    app.store.save_planner(profile, plan)
+                    return self.send({'ok': True})
                 if self.path == '/api/courses':
                     importer.course_url(args['code'], args['quarter'], int(args['year']))
                     return self.send(app.job(lambda: app.import_course(args)), 202)

@@ -140,6 +140,10 @@ function title() {
       "Materials & slides",
       "Less searching. More time to understand.",
     ],
+    planner: [
+      "Course planner",
+      "See where your courses can take you. Plan your next quarter.",
+    ],
     settings: [
       "Local settings",
       "A private workspace, saved on your own device.",
@@ -147,7 +151,10 @@ function title() {
   }[view];
 }
 function render() {
-  document.querySelector(".termbar").hidden = view === "settings";
+  document.querySelector(".termbar").hidden = ["settings", "planner"].includes(
+    view,
+  );
+  $("#add-course").hidden = view === "planner";
   const [heading, description] = title();
   $("#page-title").textContent = heading;
   $("#page-description").textContent = description;
@@ -190,14 +197,29 @@ function render() {
   $("#content").innerHTML =
     view === "settings"
       ? settings()
-      : selectedCourse
-        ? detail()
-        : view === "agenda"
-          ? agenda()
-          : view === "materials"
-            ? materialsPage()
-            : dashboard();
+      : view === "planner"
+        ? window.UWCSPlanner.render(state)
+        : selectedCourse
+          ? detail()
+          : view === "agenda"
+            ? agenda()
+            : view === "materials"
+              ? materialsPage()
+              : dashboard();
   window.UWCSTheme.apply(state.preferences.theme);
+  if (view === "planner")
+    window.UWCSPlanner.mount({
+      api,
+      reload: load,
+      toast,
+      importCourse: (code, term) => {
+        openAdd();
+        $("#course-code").value = prettyCode(code);
+        $("#course-quarter").value = term.quarter;
+        $("#course-year").value = term.year;
+        syncCourseChoice();
+      },
+    });
 }
 function stats() {
   const events = allEvents(),
@@ -332,7 +354,7 @@ function showAnalysis(result) {
 }
 document.addEventListener("click", async (event) => {
   const b = event.target.closest("button");
-  if (!b) return;
+  if (!b || b.closest("#planner-root")) return;
   try {
     if (b.dataset.pickCourse) {
       clearCourseError();

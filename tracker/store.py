@@ -77,7 +77,13 @@ class Store:
             db.execute('INSERT OR REPLACE INTO analyses VALUES (?,?)', (url, json.dumps(analysis)))
 
     def export(self):
-        return {'version': 1, 'courses': self.courses(), 'completions': self.completions(), 'analyses': self.analyses()}
+        from tracker.planner import default_profile
+        return {'version': 1, 'courses': self.courses(), 'completions': self.completions(), 'analyses': self.analyses(),
+                'planner': {'profile': self.get('planner_profile', default_profile()), 'plan': self.get('planner_plan', [])}}
+
+    def save_planner(self, profile, plan):
+        with self.connect() as db:
+            db.executemany('INSERT OR REPLACE INTO settings VALUES (?,?)', [('planner_profile', json.dumps(profile)), ('planner_plan', json.dumps(plan))])
 
     def restore(self, payload):
         if payload.get('version') != 1 or not isinstance(payload.get('courses'), list):
@@ -86,7 +92,16 @@ class Store:
         for course in payload['courses']:
             if not isinstance(course, dict) or not all(k in course for k in ('id', 'code', 'quarter', 'year', 'events', 'materials', 'essentials')):
                 raise ValueError('Backup has an invalid course.')
+        planner = payload.get('planner')
+        if planner is not None:
+            from tracker.planner import normalize_profile, normalize_plan
+            catalog = json.loads((Path(__file__).resolve().parents[1] / 'data/planner.json').read_text(encoding='utf-8'))
+            if not isinstance(planner, dict):
+                raise ValueError('Invalid planner backup.')
+            planner = {'profile': normalize_profile(planner.get('profile', {}), catalog), 'plan': normalize_plan(planner.get('plan', []), catalog)}
         with self.connect() as db:
+            if planner is not None:
+                db.executemany('INSERT OR REPLACE INTO settings VALUES (?,?)', [('planner_profile', json.dumps(planner['profile'])), ('planner_plan', json.dumps(planner['plan']))])
             for course in payload['courses']:
                 db.execute('INSERT OR REPLACE INTO courses VALUES (?,?)', (course['id'], json.dumps(course)))
             for event_id, done in payload.get('completions', {}).items():

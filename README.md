@@ -10,6 +10,7 @@ A local course dashboard for University of Washington CSE students. Bring public
 - Adds past and future courses by course code, quarter, and year.
 - Imports deadlines, exams, and links to slides, readings, recordings, the syllabus, and Gradescope from supported public course pages.
 - Provides a current-courses dashboard, combined agenda, and searchable materials library.
+- Includes a local CS BS course planner with a prerequisite web, interest-based suggestions, requirement checkpoints, and future-quarter plans.
 - Includes light, dark, and device-controlled themes, with your preference saved locally across restarts.
 - Saves personal completion checkboxes and course notes in SQLite.
 - Optionally analyzes the two most recent PDF slide decks when importing a course; other decks can be analyzed individually.
@@ -65,6 +66,22 @@ CSE 123 project due dates use the final dated row of each assignment span and th
 
 Only publicly linked materials are discovered. The tested CSE 351 schedule supplies reading references and the CSE 331 calendar supplies lecture-page links; neither exposes direct PDF slide links in the imported calendar. Local PDF analysis was verified for the linked decks in CSE 123, 311, 332, and 312.
 
+### Plan future courses
+
+Open **Course planner** in the sidebar. It defaults to **UW Seattle Computer Science BS** with an empty history and plan.
+
+1. Expand **Your history & interests**, enter completed courses and optional grades, and choose your interests.
+2. Select a course in the **Prerequisite web** to inspect required AND/OR groups, minimum grades, recommended preparation, official catalog text, and downstream courses.
+3. Use the map filters, search, or **Focus selected** to explore a path.
+4. Choose **Plan into** and add courses to future quarters. Remove an entry before moving it to a different quarter.
+5. Review prerequisite conflicts and the **CS requirement checkpoints**. Import a schedule separately when its quarter is published.
+
+The bundled catalog snapshot contains 66 courses and supporting prerequisite nodes, sourced from the [UW CSE catalog](https://www.washington.edu/students/crscat/cse.html), [CS degree requirements](https://www.washington.edu/students/gencat/program/S/ComputerScience-210.html), and [core list](https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/). Each course links to its official source. Interest tags and ranking are app-defined. This snapshot is curated, not a live catalog sync; external and unmodeled courses explicitly require a catalog check.
+
+Completed history is self-reported, separate from assignment checkboxes and imported schedules. Later quarters can assume successful completion of current imported courses and valid earlier plans, with those assumptions shown. Same-quarter prerequisites do not qualify. Minimum grades are checked where modeled; missing grades prompt review. A tentative plan never confirms an offering, registration eligibility, or seat availability.
+
+Checkpoints cover fundamentals, math routes, core counts, upper-level core counts, additional core/capstone, selected elective credits, and self-reported approved science credits. They do not replace a degree audit: general education, total degree credits, GPA, admission restrictions, substitutions, section-specific rules, and adviser approvals are not evaluated. Variable-credit courses need actual approved credits entered separately. History, interests, and plans are stored locally and included in JSON backups; importing a backup with planner data replaces the planner profile and plan. Older backups preserve existing planner data.
+
 ### Optional desktop window
 
 For a separate application window, install pywebview:
@@ -115,8 +132,10 @@ tracker/
   courses.py             Course choices, linked-page discovery, layout adapters
   availability.py        Official catalog and quarter-offering validation
   store.py               SQLite persistence and workspace backups
+  planner.py             Prerequisite logic, suggestions, and requirement progress
 web/                     Dashboard interface and styles
 data/calendar.json       Official UW calendar snapshot
+data/planner.json        Curated, source-linked planning catalog
 tests/                   Importer, persistence, PDF, and HTTP tests
   fixtures/              Public HTML snapshots for repeatable tests
 requirements.txt         Python dependencies
@@ -136,10 +155,11 @@ With Node.js installed, you can also check JavaScript syntax:
 
 ```sh
 node --check web/app.js
+node --check web/planner.js
 node --test tests/theme.test.cjs
 ```
 
-The 21 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, and saved appearance preferences.
+The 30 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
 
 The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and optional pywebview mode still need platform testing.
 
