@@ -321,8 +321,8 @@ def main():
         except ImportError:
             raise SystemExit('For a desktop window, install pywebview: python -m pip install pywebview')
         threading.Thread(target=server.serve_forever, daemon=True).start()
-        webview.create_window('UWCS Tracker', url, width=1360, height=900, min_size=(820, 620))
-        webview.start()
+        webview.create_window('CS Tracker', url, width=1360, height=900, min_size=(820, 620))
+        webview.start(gui='edgechromium' if sys.platform == 'win32' else None)
         server.shutdown()
     else:
         if not args.no_browser:

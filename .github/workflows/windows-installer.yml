@@ -1,0 +1,46 @@
+name: Windows installer
+on:
+  push:
+    branches: [main]
+    paths: [app.py, desktop.py, tracker/**, web/**, data/**, requirements*.txt, packaging/**, .github/workflows/windows-installer.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      APP_VERSION: 0.2.${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build dependencies
+        run: python -m pip install -r requirements-desktop.txt
+      - name: Test application
+        run: python -B -m unittest discover -s tests -v
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup --no-progress -y }
+      - name: Build and smoke-test standalone application and installer
+        shell: pwsh
+        run: ./packaging/build-windows.ps1 -Version $env:APP_VERSION
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CS-Tracker-Windows-installer
+          path: dist/installer/*
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $version = "v$env:APP_VERSION"
+          gh release view $version *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $version --target $env:GITHUB_SHA --title "CS Tracker $env:APP_VERSION — Windows installer" --notes 'Standalone Windows x64 installer. No Python installation required. User data stays on your device. Setup installs Microsoft Edge WebView2 Runtime if needed (internet required). This initial release is unsigned; Windows may display an unrecognized-app warning. Uninstall preserves your workspace.'
+            if ($LASTEXITCODE -ne 0) { throw 'Release creation failed.' }
+          }
+          gh release upload $version dist/installer/* --clobber
+          if ($LASTEXITCODE -ne 0) { throw 'Release asset upload failed.' }

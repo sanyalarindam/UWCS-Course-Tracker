@@ -12,3 +12,6 @@ Thumbs.db
 !.env.example
 uwcs-backup-*.json
 *.log
+
+build/
+dist/

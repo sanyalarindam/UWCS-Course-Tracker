@@ -2,7 +2,7 @@
 
 A local course dashboard for University of Washington CSE students. Bring public course schedules, assignments, exams, and class materials into one workspace, with your notes and progress saved on your own device.
 
-**Status:** working prototype, verified against CSE 123, 311, 351, 331, 332, and 312 for Autumn 2026. Runs with Python on Windows, macOS, and Linux; a packaged installer and mobile app are not included yet.
+**Status:** working prototype, verified against CSE 123, 311, 351, 331, 332, and 312 for Autumn 2026. Runs with Python on Windows, macOS, and Linux; a standalone Windows x64 installer is built by GitHub Actions. Mobile installers are not included.
 
 ## Features
 
@@ -24,6 +24,31 @@ A local course dashboard for University of Washington CSE students. Bring public
 - Preserves saved data when refreshes fail, highlights changed dates, and supports JSON backup export/import.
 
 No account, hosted database, analytics, or AI API key is required.
+
+## Install the Windows app
+
+1. Open [GitHub Releases](https://github.com/sanyalarindam/UWCS-Course-Tracker/releases/latest).
+2. Download **CS-Tracker-Setup-VERSION-Windows-x64.exe** from the release assets.
+3. Run Setup, then open **CS Tracker** from the Start menu. An optional desktop shortcut is available.
+
+The installer includes Python and the required libraries; you do not need Python, Git, or a terminal to run the installed app. It opens in its own desktop window on Windows 10/11 x64. Setup checks/installs Microsoft Edge WebView2 Runtime using Microsoft's bootstrapper; internet access may be needed. The initial installer is not code-signed, so Windows may display an unrecognized-app warning. Release assets include **SHA256SUMS.txt** for checksum verification.
+
+Each Windows user has a separate workspace at `%LOCALAPPDATA%/UWCS Tracker`. Updates and uninstall preserve this data; export a backup before moving to another device. Existing source-based workspaces using that default folder are reused. A development workspace started with `--data-dir` remains separate: export/import its backup to move it into the installed app. Closing the desktop window stops the local server and automatic refresh.
+
+### Build the Windows installer
+
+On Windows with Python 3.12 and [Inno Setup 6](https://jrsoftware.org/isinfo.php) installed:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements-desktop.txt
+.\packaging\build-windows.ps1
+```
+
+The build creates `dist/CS Tracker/CS Tracker.exe` and `dist/installer/CS-Tracker-Setup-0.2.0-Windows-x64.exe`. It smoke-tests the bundled server, planner data, and UI assets before compiling Setup. The WebView2 bootstrapper is downloaded from Microsoft and its Authenticode signature is verified before inclusion. Only app source, UI, and catalog/calendar snapshots are bundled; local workspaces, cached slides, backups, and credentials are excluded.
+
+The **Windows installer** workflow runs on relevant pushes to `main` or manual dispatch. It tests the app, packages it, uploads a workflow artifact, and publishes a versioned GitHub release with the installer and checksums. The workflow uses a fresh Windows runner and does not upload local development data. macOS/Linux users can still run the source version below; installers for those platforms are not provided yet.
 
 ## Quick start
 
@@ -209,7 +234,7 @@ node --test tests/theme.test.cjs
 
 The 41 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
 
-The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and optional pywebview mode still need platform testing.
+The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and source-based desktop mode still need additional platform testing.
 
 Exam logistics are extracted from explicit calendar entries and up to three same-offering linked HTML exam/syllabus pages. Missing or conflicting details remain unspecified; lecture rooms are not assumed to be exam rooms. Refresh existing courses to retrieve newly published exam details. PDF-only exam logistics are not automatically extracted by this importer.
 
