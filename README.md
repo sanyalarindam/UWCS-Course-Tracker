@@ -9,6 +9,7 @@ A local course dashboard for University of Washington CSE students. Bring public
 - Defaults to the current UW quarter using the official academic calendar; selects the upcoming quarter during breaks.
 - Adds past and future courses by course code, quarter, and year.
 - Imports deadlines, exams, and links to slides, readings, recordings, the syllabus, and Gradescope from supported public course pages.
+- Includes exam times and locations when explicitly published in supported calendars or bounded linked exam/syllabus pages, with source links.
 - Provides a current-courses dashboard, combined agenda, and searchable materials library.
 - Includes a local UW Seattle CS BS planner with a course map, personalized suggestions, degree progress, and future-quarter plans.
 - Searches all 75 mapped courses from any map view, including courses you have not taken.
@@ -196,9 +197,11 @@ node --check web/planner.js
 node --test tests/theme.test.cjs
 ```
 
-The 32 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
+The 36 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
 
 The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and optional pywebview mode still need platform testing.
+
+Exam logistics are extracted from explicit calendar entries and up to three same-offering linked HTML exam/syllabus pages. Missing or conflicting details remain unspecified; lecture rooms are not assumed to be exam rooms. Refresh existing courses to retrieve newly published exam details. PDF-only exam logistics are not automatically extracted by this importer.
 
 ## Current limitations
 

@@ -129,6 +129,7 @@ def safe_link(base, href):
 
 def parse_course(html, url, code, quarter, year):
     from tracker.courses import verify_offering, parse_layout
+    from tracker.exams import logistics
     soup = BeautifulSoup(html, 'html.parser')
     title = verify_offering(soup, code, quarter, year)
     adapted = parse_layout(soup, url, code, quarter, year)
@@ -170,7 +171,7 @@ def parse_course(html, url, code, quarter, year):
                     materials.append({'title': f'{kind}: {topic}' if kind else topic or label, 'label': label, 'date': date, 'kind': material_kind, 'url': target})
         if re.search(r'\b(midterm|final exam)\b', kind or topic, re.I):
             clock = re.search(r'\b\d{1,2}:\d{2}\s*[-–]\s*\d{1,2}:\d{2}\s*(?:a\.?m\.?|p\.?m\.?)', text(row), re.I)
-            events.append({'title': kind or 'Exam', 'date': date, 'kind': 'exam', 'url': url, 'source': url, 'time': clock[0] if clock else None})
+            events.append({'title': kind or 'Exam', 'date': date, 'kind': 'exam', 'url': url, 'source': url, **logistics(text(row))})
     # Deduplicate without discarding the original source or inventing due times.
     events = list({(e['title'], e['date'], e['kind']): e for e in events}.values())
     materials = list({(m['url'], m['date']): m for m in materials}.values())

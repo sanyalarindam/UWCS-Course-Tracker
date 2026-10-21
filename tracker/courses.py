@@ -9,6 +9,7 @@ import urllib.parse
 from bs4 import BeautifulSoup
 
 from tracker import importer as core
+from tracker.exams import logistics
 
 COURSES = [
     {'code': 'CSE123', 'name': 'Introduction to Computer Programming III'},
@@ -56,7 +57,7 @@ def clock(node):
 
 def event(title, date, node, url, kind='assignment', time=None):
     a = node if node.name == 'a' and node.get('href') else node.select_one('a[href]')
-    return {'title': re.sub(r'\s*\b(due|deadline)\b\s*:?\s*', '', title, flags=re.I).strip(), 'date': date, 'kind': kind, 'time': time if time else clock(node), 'url': core.safe_link(url, a['href']) if a else url, 'source': url}
+    return {'title': re.sub(r'\s*\b(due|deadline)\b\s*:?\s*', '', title, flags=re.I).strip(), 'date': date, 'kind': kind, 'time': time if time else clock(node), 'url': core.safe_link(url, a['href']) if a else url, 'source': url, **({'location': logistics(core.text(node))['location']} if kind == 'exam' else {})}
 
 
 def material(a, date, title, url, lecture=False):
@@ -267,5 +268,20 @@ def load_course(html, url, code, quarter, year):
         combined['warnings'] = [w for w in combined['warnings'] if not w.startswith('No supported')]
     if code == 'CSE123':
         combined['warnings'].append('Project deadlines use the final dated row of each calendar assignment span. Computer-quiz availability windows are not treated as due dates.')
+    # Read a few explicitly linked exam/syllabus pages from this offering only.
+    from tracker.exams import enrich
+    details = list(documents)
+    targets = []
+    for doc, source in documents:
+        for a in doc.select('a[href]'):
+            target = core.safe_link(source, a['href'])
+            if re.search(r'\b(midterm|final|exams?|syllabus)\b', core.text(a), re.I) and target.startswith(url) and target not in [u for _, u in details] and target not in targets and not target.lower().split('?')[0].endswith(('.pdf','.zip','.png','.jpg')):
+                targets.append(target)
+    for target in targets[:3]:
+        try:
+            details.append((BeautifulSoup(core.fetch(target), 'html.parser'), target))
+        except Exception:
+            pass  # Optional details cannot discard a successfully imported calendar.
+    enrich(combined['events'], details)
     combined['sources'] = [source for _, source in documents]
     return combined
