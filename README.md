@@ -10,6 +10,7 @@ A local course dashboard for University of Washington CSE students. Bring public
 - Adds past and future courses by course code, quarter, and year.
 - Imports deadlines, exams, and links to slides, readings, recordings, the syllabus, and Gradescope from supported public course pages.
 - Provides a current-courses dashboard, combined agenda, and searchable materials library.
+- Includes light, dark, and device-controlled themes, with your preference saved locally across restarts.
 - Saves personal completion checkboxes and course notes in SQLite.
 - Optionally analyzes the two most recent PDF slide decks when importing a course; other decks can be analyzed individually.
 - Flags slide passages mentioning deadlines, assignments, exams, or announcements, with page references for review.
@@ -111,6 +112,7 @@ With Node.js installed, you can also check JavaScript syntax:
 
 ```sh
 node --check web/app.js
+node --test tests/theme.test.cjs
 ```
 
 The eight automated tests cover real course extraction, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, and local HTTP request protections.

@@ -4,7 +4,6 @@ import concurrent.futures
 import datetime as dt
 import hashlib
 import json
-import os
 from pathlib import Path
 import secrets
 import sys
@@ -37,7 +36,7 @@ class Application:
 
     def state(self):
         today = importer.today_seattle()
-        return {'courses': self.store.courses(), 'completions': self.store.completions(), 'analyses': self.store.analyses(), 'term': importer.current_term(self.store.get('terms', []), today), 'terms': self.store.get('terms', []), 'today': today.isoformat(), 'data_path': str(self.store.directory), 'calendar_checked': self.store.get('calendar_checked'), 'calendar_source': importer.CALENDAR_URL, 'token': self.token}
+        return {'courses': self.store.courses(), 'completions': self.store.completions(), 'analyses': self.store.analyses(), 'term': importer.current_term(self.store.get('terms', []), today), 'terms': self.store.get('terms', []), 'today': today.isoformat(), 'data_path': str(self.store.directory), 'calendar_checked': self.store.get('calendar_checked'), 'calendar_source': importer.CALENDAR_URL, 'preferences': {'theme': self.store.get('theme', 'system')}, 'token': self.token}
 
     def job(self, fn):
         key = secrets.token_hex(8)
@@ -170,10 +169,16 @@ def make_handler(app):
                     if cached.exists():
                         return self.send(cached.read_bytes(), content_type='application/pdf')
                 return self.send({'error': 'Cached PDF not found'}, 404)
-            files = {'/': ('index.html', 'text/html; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/styles.css': ('styles.css', 'text/css; charset=utf-8')}
+            files = {'/': ('index.html', 'text/html; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/theme.js': ('theme.js', 'text/javascript; charset=utf-8'), '/styles.css': ('styles.css', 'text/css; charset=utf-8')}
             if path in files:
                 name, mime = files[path]
-                return self.send((ROOT / 'web' / name).read_bytes(), content_type=mime)
+                content = (ROOT / 'web' / name).read_bytes()
+                if path == '/':
+                    preference = app.store.get('theme', 'system')
+                    if preference not in ('system', 'light', 'dark'):
+                        preference = 'system'
+                    content = content.replace(b'<html lang="en">', f'<html lang="en" data-theme-preference="{preference}">'.encode())
+                return self.send(content, content_type=mime)
             return self.send({'error': 'Not found'}, 404)
 
         def do_POST(self):
@@ -191,7 +196,11 @@ def make_handler(app):
                     return self.send(app.job(lambda: app.analyze(args)), 202)
                 if self.path == '/api/calendar':
                     return self.send(app.job(app.refresh_calendar), 202)
-                if self.path == '/api/complete':
+                if self.path == '/api/preferences':
+                    if args.get('theme') not in ('system', 'light', 'dark'):
+                        raise ValueError('Choose system, light, or dark appearance.')
+                    app.store.set('theme', args['theme'])
+                elif self.path == '/api/complete':
                     app.store.completion(args['id'], args['done'])
                 elif self.path == '/api/notes':
                     course = next(c for c in app.store.courses() if c['id'] == args['id'])

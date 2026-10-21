@@ -126,6 +126,22 @@ class ServerTests(unittest.TestCase):
                     self.assertIn(b'Current courses', response.read())
                 with urllib.request.urlopen(base + '/api/state') as response:
                     state = json.load(response)
+                self.assertEqual(state['preferences']['theme'], 'system')
+                with urllib.request.urlopen(base + '/theme.js') as response:
+                    self.assertIn(b'prefers-color-scheme', response.read())
+                theme_request = urllib.request.Request(base + '/api/preferences', data=b'{"theme":"dark"}', headers={'Content-Type': 'application/json', 'X-UWCS-Token': state['token']})
+                with urllib.request.urlopen(theme_request) as response:
+                    self.assertEqual(response.status, 200)
+                with urllib.request.urlopen(base + '/') as response:
+                    self.assertIn(b'data-theme-preference="dark"', response.read())
+                reopened = app.Application(directory)
+                self.assertEqual(reopened.state()['preferences']['theme'], 'dark')
+                reopened.pool.shutdown()
+                invalid_theme = urllib.request.Request(base + '/api/preferences', data=b'{"theme":"purple"}', headers={'Content-Type': 'application/json', 'X-UWCS-Token': state['token']})
+                with self.assertRaises(urllib.error.HTTPError) as invalid:
+                    urllib.request.urlopen(invalid_theme)
+                self.assertEqual(invalid.exception.code, 400)
+                self.assertEqual(application.store.get('theme'), 'dark')
                 request = urllib.request.Request(base + '/api/complete', data=b'{"id":"test","done":true}', headers={'Content-Type':'application/json'})
                 with self.assertRaises(urllib.error.HTTPError) as caught:
                     urllib.request.urlopen(request)
