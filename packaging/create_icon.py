@@ -1,17 +1,13 @@
-"""Generate the app's original purple W mark at Windows icon sizes."""
+"""Build Windows and macOS icons from the supplied shared logo."""
 import argparse
 from pathlib import Path
-from PIL import Image, ImageDraw
+from PIL import Image
 
 
 def build(output):
     output.mkdir(parents=True, exist_ok=True)
-    image = Image.new('RGBA', (1024,1024), (0,0,0,0))
-    draw = ImageDraw.Draw(image)
-    draw.rounded_rectangle((24,24,1000,1000), radius=220, fill='#633F91')
-    # Geometric W; defined as a vector polygon so no fonts are required.
-    points = [(155,270),(295,270),(386,652),(467,340),(564,340),(646,652),(734,270),(870,270),(704,765),(584,765),(515,509),(443,765),(324,765)]
-    draw.polygon(points, fill='#FFFFFF')
+    source = Path(__file__).resolve().parents[1] / 'web/assets/logo.png'
+    image = Image.open(source).convert('RGBA').resize((1024,1024), Image.Resampling.LANCZOS)
     image.save(output / 'app.png')
     image.save(output / 'app.icns')
     image.save(output / 'app.ico', sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])

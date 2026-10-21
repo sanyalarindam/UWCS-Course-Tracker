@@ -232,7 +232,7 @@ def make_handler(app):
                     if cached.exists():
                         return self.send(cached.read_bytes(), content_type='application/pdf')
                 return self.send({'error': 'Cached PDF not found'}, 404)
-            files = {'/': ('index.html', 'text/html; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/theme.js': ('theme.js', 'text/javascript; charset=utf-8'), '/planner.js': ('planner.js', 'text/javascript; charset=utf-8'), '/planner.css': ('planner.css', 'text/css; charset=utf-8'), '/styles.css': ('styles.css', 'text/css; charset=utf-8')}
+            files = {'/assets/logo.png': ('assets/logo.png', 'image/png'), '/': ('index.html', 'text/html; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/theme.js': ('theme.js', 'text/javascript; charset=utf-8'), '/planner.js': ('planner.js', 'text/javascript; charset=utf-8'), '/planner.css': ('planner.css', 'text/css; charset=utf-8'), '/styles.css': ('styles.css', 'text/css; charset=utf-8')}
             if path in files:
                 name, mime = files[path]
                 content = (ROOT / 'web' / name).read_bytes()

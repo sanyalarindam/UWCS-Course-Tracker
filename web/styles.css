@@ -1332,3 +1332,19 @@ input[aria-invalid="true"] {
   margin: 8px 0;
   line-height: 1.5;
 }
+
+/* Use the supplied square mark without changing its proportions. */
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: transparent;
+  flex-shrink: 0;
+}
+@media (max-width: 720px) {
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+}

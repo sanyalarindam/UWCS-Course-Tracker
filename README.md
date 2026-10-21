@@ -67,7 +67,7 @@ Open [GitHub Releases](https://github.com/sanyalarindam/UWCS-Course-Tracker/rele
 | Apple Silicon (M1/M2/M3/M4 and later) | `CS-Tracker-VERSION-macOS-arm64.dmg` |
 | Intel | `CS-Tracker-VERSION-macOS-x86_64.dmg` |
 
-Requires **macOS 15 or later**. Open the DMG, drag **CS Tracker.app** to **Applications**, then eject the disk image and launch the app. Python, Git, and WebView2 are not required: Python is bundled and the app uses macOS WebKit. The app includes its purple W icon.
+Requires **macOS 15 or later**. Open the DMG, drag **CS Tracker.app** to **Applications**, then eject the disk image and launch the app. Python, Git, and WebView2 are not required: Python is bundled and the app uses macOS WebKit. The app includes the shared logo used by the interface and installers.
 
 These initial builds are ad-hoc signed for bundle integrity, **not signed with an Apple Developer ID or notarized**. macOS may block the first launch. Consult [Apple's guidance for unidentified developers](https://support.apple.com/102445) and decide whether you trust the download; the installer does not disable Gatekeeper or change system security settings.
 
@@ -283,3 +283,7 @@ Exam logistics are extracted from explicit calendar entries and up to three same
 - Current-quarter refreshes run automatically while the app is running; other quarters use manual refresh. Operating-system background refresh, push notifications, automatic device sync, and signed installers are future work.
 
 UWCS Tracker is an independent student project and is not affiliated with the University of Washington. Check original course materials for authoritative deadlines.
+
+## Branding assets
+
+The interface, browser favicon, Windows executable/installer, and macOS app icon are all built from `web/assets/logo.png`, the UW mark supplied by the project maintainer. This mark is not original project artwork, and its inclusion does not imply UW endorsement or grant permission to reuse UW trademarks. The project is independently maintained.
