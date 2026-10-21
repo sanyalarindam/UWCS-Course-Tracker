@@ -17,6 +17,7 @@ OutputBaseFilename=CS-Tracker-Setup-{#AppVersion}-Windows-x64
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
+SetupIconFile=..\.local-data\build-tools\app.ico
 UninstallDisplayIcon={app}\CS Tracker.exe
 CloseApplications=yes
 [Tasks]

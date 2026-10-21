@@ -11,5 +11,5 @@ a = Analysis([str(root / 'desktop.py')], pathex=[str(root)],
     noarchive=False)
 pyz = PYZ(a.pure)
 exe = EXE(pyz, a.scripts, [], exclude_binaries=True, name='CS Tracker',
-    debug=False, strip=False, upx=False, console=False)
+    debug=False, strip=False, upx=False, console=False, icon=str(root / '.local-data/build-tools/app.ico'))
 coll = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name='CS Tracker')

@@ -29,7 +29,7 @@ No account, hosted database, analytics, or AI API key is required.
 
 1. Open [GitHub Releases](https://github.com/sanyalarindam/UWCS-Course-Tracker/releases/latest).
 2. Download **CS-Tracker-Setup-VERSION-Windows-x64.exe** from the release assets.
-3. Run Setup, then open **CS Tracker** from the Start menu. An optional desktop shortcut is available.
+3. Run Setup, then open **CS Tracker** from the Start menu. An optional desktop shortcut is available. The app, taskbar window, Start menu shortcut, and installer use the purple W app icon.
 
 The installer includes Python and the required libraries; you do not need Python, Git, or a terminal to run the installed app. It opens in its own desktop window on Windows 10/11 x64. Setup checks/installs Microsoft Edge WebView2 Runtime using Microsoft's bootstrapper; internet access may be needed. The initial installer is not code-signed, so Windows may display an unrecognized-app warning. Release assets include **SHA256SUMS.txt** for checksum verification.
 

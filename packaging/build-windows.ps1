@@ -1,6 +1,8 @@
 param([string]$Version = "0.2.0", [string]$Iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")
 $ErrorActionPreference = 'Stop'
 Set-Location (Split-Path $PSScriptRoot -Parent)
+python packaging/create_icon.py
+if ($LASTEXITCODE -ne 0) { throw 'App icon generation failed.' }
 python -m PyInstaller --noconfirm --clean --distpath dist --workpath .local-data/pyinstaller packaging/windows.spec
 if ($LASTEXITCODE -ne 0) { throw 'Application packaging failed.' }
 $smoke = Start-Process -FilePath '.\dist\CS Tracker\CS Tracker.exe' -ArgumentList '--smoke-test' -PassThru -Wait -WindowStyle Hidden

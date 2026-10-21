@@ -33,6 +33,9 @@ def main():
     if '--smoke-test' in sys.argv:
         smoke_test()
         return
+    if sys.platform == 'win32':
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('CS.Tracker.Desktop')
     from tracker.store import data_directory
     directory = data_directory()
     directory.mkdir(parents=True, exist_ok=True)
