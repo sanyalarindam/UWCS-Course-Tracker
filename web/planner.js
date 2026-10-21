@@ -173,8 +173,8 @@
       rows.set(column, row + 1);
     }
     dimensions = {
-      width: Math.max(1020, 48 + (Math.max(0, ...rows.keys()) + 1) * 252),
-      height: Math.max(360, 70 + Math.max(0, ...rows.values()) * 94),
+      width: Math.max(search.trim() ? 320 : 800, 48 + (Math.max(0, ...rows.keys()) + 1) * 252),
+      height: Math.max(search.trim() ? 180 : 360, 70 + Math.max(0, ...rows.values()) * 94),
     };
     const edges = [];
     for (const course of courses) {
@@ -347,6 +347,7 @@
   function positionGraph() {
     const canvas = document.querySelector(".planner-graph-canvas");
     if (!canvas) return;
+    canvas.parentElement.style.height = search.trim() ? Math.min(470, dimensions.height) + "px" : "";
     canvas.style.width = dimensions.width + "px";
     canvas.style.height = dimensions.height + "px";
     for (const node of canvas.querySelectorAll("[data-select-course]")) {
