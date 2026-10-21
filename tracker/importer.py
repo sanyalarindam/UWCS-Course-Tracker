@@ -52,6 +52,21 @@ def fetch(url, limit=25_000_000):
 
 
 def parse_date(text, year):
+    iso = re.search(r'\b(20\d{2}-\d{2}-\d{2})\b', text)
+    if iso:
+        try:
+            return dt.date.fromisoformat(iso[1]).isoformat()
+        except ValueError:
+            return None
+    numeric = re.search(r'(?<!\d)(\d{1,2})/(\d{1,2})(?!\d)', text)
+    if numeric:
+        try:
+            return dt.date(year, int(numeric[1]), int(numeric[2])).isoformat()
+        except ValueError:
+            return None
+    reverse = re.search(r'\b(\d{1,2})\s+(Jan\w*|Feb\w*|Mar\w*|Apr\w*|May|Jun\w*|Jul\w*|Aug\w*|Sep\w*|Oct\w*|Nov\w*|Dec\w*)\b', text, re.I)
+    if reverse:
+        text = f'{reverse[2]} {reverse[1]}'
     match = re.search(r'\b(Jan\w*|Feb\w*|Mar\w*|Apr\w*|May|Jun\w*|Jul\w*|Aug\w*|Sep\w*|Oct\w*|Nov\w*|Dec\w*)\.?\s+(\d{1,2})(?:\s*,\s*(20\d{2}))?', text, re.I)
     if not match:
         return None
@@ -113,11 +128,12 @@ def safe_link(base, href):
 
 
 def parse_course(html, url, code, quarter, year):
+    from tracker.courses import verify_offering, parse_layout
     soup = BeautifulSoup(html, 'html.parser')
-    title = text(soup.find('h1')) or text(soup.find('title'))
-    compact = re.sub(r'[^a-z0-9]', '', title.lower())
-    if re.sub(r'\s+', '', code).lower() not in compact or str(year) not in title or quarter.lower() not in title.lower():
-        raise ValueError('The page title does not confirm the requested course, quarter, and year. Import stopped for review.')
+    title = verify_offering(soup, code, quarter, year)
+    adapted = parse_layout(soup, url, code, quarter, year)
+    if adapted is not None:
+        return adapted
     events, materials, essentials = [], [], []
     releases = {}
     for a in soup.select('a[href]'):

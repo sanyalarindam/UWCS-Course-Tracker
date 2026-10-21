@@ -82,7 +82,7 @@
         <div class="modal-heading">
           <div>
             <div class="eyebrow">MAKE ROOM FOR YOUR NEXT COURSE</div>
-            <h2>Add a course</h2>
+            <h2>Choose a course</h2>
           </div>
           <button
             type="button"
@@ -93,14 +93,19 @@
           </button>
         </div>
         <p>
-          We’ll look for its public UW page and bring its schedule into your
-          workspace.
+          Select a course below, or enter another CSE course code. Nothing is
+          imported until you choose Find &amp; import.
         </p>
+        <div
+          id="course-options"
+          class="course-options"
+          aria-label="Course choices"
+        ></div>
         <label
           >Course code<input
             id="course-code"
             name="code"
-            placeholder="CSE 312"
+            placeholder="Enter a CSE course code"
             required
             pattern="[Cc][Ss][Ee]\s*[0-9]{3}[A-Za-z]?"
             autocomplete="off"

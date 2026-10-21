@@ -2,7 +2,7 @@
 
 A local course dashboard for University of Washington CSE students. Bring public course schedules, assignments, exams, and class materials into one workspace, with your notes and progress saved on your own device.
 
-**Status:** working prototype, verified against CSE 312 Autumn 2026. Runs with Python on Windows, macOS, and Linux; a packaged installer and mobile app are not included yet.
+**Status:** working prototype, verified against CSE 123, 311, 351, 331, 332, and 312 for Autumn 2026. Runs with Python on Windows, macOS, and Linux; a packaged installer and mobile app are not included yet.
 
 ## Features
 
@@ -35,13 +35,33 @@ After installing dependencies, Windows users can double-click **launch.bat**. On
 
 ### Try a course
 
-1. Click **Add a course**.
-2. Enter **CSE 312**, **Autumn**, **2026**, or another supported offering.
-3. Keep recent-slide analysis selected if you want local PDF analysis during import.
-4. Open the course dashboard for its agenda, materials, slide findings, syllabus snippets, and private notes.
-5. Use **Refresh course** to check the public page again.
+New workspaces start with **no courses**. The course chooser is a list of available options, not a preloaded schedule. Courses are fetched and saved only after you explicitly import them. Existing workspaces retain courses you previously chose; restarting does not erase your selections.
 
-The CSE 312 test snapshot imports **9 problem-set deadlines, 2 exams, and 90 linked materials**. If a future course page returns 404, the course is saved with an unavailable-schedule message so you can retry later.
+1. Click **Add a course**.
+2. Select one of the six course options, or type another CSE code. Nothing is selected by default.
+3. Confirm the quarter and year; the current UW quarter is the default.
+4. Keep recent-slide analysis selected if you want local PDF analysis during import, then choose **Find & import**.
+5. Open the course dashboard for its agenda, materials, slide findings, syllabus snippets, and private notes.
+6. Use **Refresh course** to check the public page again.
+
+If a future course page returns 404, the course is saved with an unavailable-schedule message so you can retry later.
+
+### Verified imports
+
+Live checks and minimized regression fixtures cover these Autumn 2026 pages. Counts reflect their published schedules when tested, not a promise that future offerings share the same layout.
+
+| Course | Agenda items | Materials | Calendar format |
+| --- | ---: | ---: | --- |
+| CSE 123 | 8 | 40 | Numeric dates and assignment spans |
+| CSE 311 | 11 | 104 | Configuration-based navigation and a linked month grid |
+| CSE 351 | 68 | 26 | Separate schedule with homework, readings, labs, and quizzes |
+| CSE 331 | 14 | 9 | Linked month grid with assignments and exams |
+| CSE 332 | 17 | 37 | Date attributes and explicit assignment markers |
+| CSE 312 | 11 | 90 | Lecture-by-lecture calendar |
+
+CSE 123 project due dates use the final dated row of each assignment span and the stated submission time. Computer-quiz signup windows are not turned into deadlines. Review sessions are not treated as exams. Unpublished links do not prevent importing explicitly listed future deadlines; those entries link back to the source calendar.
+
+Only publicly linked materials are discovered. The tested CSE 351 schedule supplies reading references and the CSE 331 calendar supplies lecture-page links; neither exposes direct PDF slide links in the imported calendar. Local PDF analysis was verified for the linked decks in CSE 123, 311, 332, and 312.
 
 ### Optional desktop window
 
@@ -90,6 +110,7 @@ Python serves a browser interface built with JavaScript, HTML, and CSS. SQLite s
 app.py                   Local server, background import jobs, and launcher
 tracker/
   importer.py            Course discovery, calendar parsing, PDF analysis
+  courses.py             Course choices, linked-page discovery, layout adapters
   store.py               SQLite persistence and workspace backups
 web/                     Dashboard interface and styles
 data/calendar.json       Official UW calendar snapshot
@@ -115,14 +136,14 @@ node --check web/app.js
 node --test tests/theme.test.cjs
 ```
 
-The eight automated tests cover real course extraction, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, and local HTTP request protections.
+The 14 Python tests and five JavaScript theme tests cover empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, and saved appearance preferences.
 
-The app has been checked on Windows against the live CSE 312 course page and real PDF slides. macOS/Linux and optional pywebview mode still need platform testing.
+The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and optional pywebview mode still need platform testing.
 
 ## Current limitations
 
 - Discovery constructs the standard CSE course/quarter URL and verifies its title. Alternate URLs and general web search are not implemented.
-- The parser supports CSE 312's calendar layout and a limited table fallback. Other websites may need dedicated parsers; unsupported schedules are flagged for review.
+- The parser supports the six tested layouts, including bounded discovery of linked calendar pages and CSE 311's declared navigation configuration. Other websites may need dedicated parsers; unsupported schedules are flagged for review.
 - Slide analysis uses text extraction and keyword matching, not semantic AI analysis. Image-only slides, diagrams, and OCR are not supported. Scans can miss information; findings do not automatically become deadlines.
 - Syllabus rules appear as policy snippets. Recurring concept-check deadlines are not inferred.
 - Course refreshes are manual. Scheduled refreshes, notifications, automatic device sync, and signed installers are future work.

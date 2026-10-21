@@ -106,6 +106,14 @@ function allMaterials(cs = courses()) {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 function openAdd() {
+  $("#course-form").reset();
+  $("#course-code").value = "";
+  $("#course-options").innerHTML = state.catalog
+    .map(
+      (course) =>
+        `<button type="button" class="course-option" data-pick-course="${esc(course.code)}" aria-pressed="false"><b>${esc(prettyCode(course.code))}</b><span>${esc(course.name)}</span></button>`,
+    )
+    .join("");
   const t = state.term || { quarter: "Autumn", year: new Date().getFullYear() };
   $("#course-quarter").value = t.quarter;
   $("#course-year").value = t.year;
@@ -320,7 +328,10 @@ document.addEventListener("click", async (event) => {
   const b = event.target.closest("button");
   if (!b) return;
   try {
-    if (b.hasAttribute("data-theme-toggle")) {
+    if (b.dataset.pickCourse) {
+      $("#course-code").value = prettyCode(b.dataset.pickCourse);
+      syncCourseChoice();
+    } else if (b.hasAttribute("data-theme-toggle")) {
       b.disabled = true;
       await saveTheme(
         document.documentElement.dataset.theme === "dark" ? "light" : "dark",
@@ -434,7 +445,17 @@ function filterMaterials() {
 }
 document.addEventListener("input", (e) => {
   if (e.target.id === "material-search") filterMaterials();
+  if (e.target.id === "course-code") syncCourseChoice();
 });
+function syncCourseChoice() {
+  const code = $("#course-code").value.replace(/\s+/g, "").toUpperCase();
+  document.querySelectorAll("[data-pick-course]").forEach((button) => {
+    button.setAttribute(
+      "aria-pressed",
+      String(button.dataset.pickCourse === code),
+    );
+  });
+}
 $("#add-course").onclick = openAdd;
 document
   .querySelectorAll(".close-dialog")

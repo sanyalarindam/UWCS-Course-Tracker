@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT / '.deps'))
 try:
     from tracker import importer
     from tracker.store import Store
+    from tracker.courses import COURSES, load_course
 except ImportError:
     raise SystemExit('Install dependencies first: python -m pip install --target .deps -r requirements.txt')
 
@@ -36,7 +37,7 @@ class Application:
 
     def state(self):
         today = importer.today_seattle()
-        return {'courses': self.store.courses(), 'completions': self.store.completions(), 'analyses': self.store.analyses(), 'term': importer.current_term(self.store.get('terms', []), today), 'terms': self.store.get('terms', []), 'today': today.isoformat(), 'data_path': str(self.store.directory), 'calendar_checked': self.store.get('calendar_checked'), 'calendar_source': importer.CALENDAR_URL, 'preferences': {'theme': self.store.get('theme', 'system')}, 'token': self.token}
+        return {'courses': self.store.courses(), 'catalog': COURSES, 'completions': self.store.completions(), 'analyses': self.store.analyses(), 'term': importer.current_term(self.store.get('terms', []), today), 'terms': self.store.get('terms', []), 'today': today.isoformat(), 'data_path': str(self.store.directory), 'calendar_checked': self.store.get('calendar_checked'), 'calendar_source': importer.CALENDAR_URL, 'preferences': {'theme': self.store.get('theme', 'system')}, 'token': self.token}
 
     def job(self, fn):
         key = secrets.token_hex(8)
@@ -61,7 +62,7 @@ class Application:
         course = previous or {'id': course_id, 'code': code, 'quarter': quarter, 'year': year, 'url': url, 'title': code, 'events': [], 'materials': [], 'essentials': [], 'notes': '', 'warnings': []}
         try:
             html = importer.fetch(url).decode('utf-8', errors='replace')
-            parsed = importer.parse_course(html, url, code, quarter, year)
+            parsed = load_course(html, url, code, quarter, year)
         except urllib.error.HTTPError as exc:
             if exc.code == 404:
                 if previous and previous.get('events'):
@@ -89,7 +90,7 @@ class Application:
         self.store.save_course(course)
         # Recent slides are analyzed locally; older decks remain available on demand.
         if args.get('scan_slides'):
-            recent = sorted([m for m in course['materials'] if m['kind'] == 'slides' and m['date'] <= importer.today_seattle().isoformat()], key=lambda m: m['date'], reverse=True)[:2]
+            recent = sorted([m for m in course['materials'] if m['kind'] == 'slides' and urllib.parse.urlsplit(m['url']).path.lower().endswith('.pdf') and m['date'] <= importer.today_seattle().isoformat()], key=lambda m: m['date'], reverse=True)[:2]
             for material in recent:
                 try:
                     self.analyze({'course': course_id, 'url': material['url']})
