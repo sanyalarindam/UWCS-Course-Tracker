@@ -1,0 +1,37 @@
+name: Remove legacy branded releases
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/remove-legacy-releases.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete verified legacy release pages and downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          while read -r id tag commit; do
+            if ! metadata=$(gh api "repos/$GH_REPO/releases/$id" 2>error.txt); then
+              if grep -q 'HTTP 404' error.txt; then
+                echo "$tag already absent"
+                continue
+              fi
+              cat error.txt >&2
+              exit 1
+            fi
+            echo "$metadata" | jq -e --arg tag "$tag" --arg commit "$commit" '.tag_name == $tag and .target_commitish == $commit' >/dev/null
+            gh api --method DELETE "repos/$GH_REPO/releases/$id"
+            echo "Deleted $tag release and its downloadable assets; source tag retained."
+          done <<'RELEASES'
+          420044551 v0.3.4 28977ce6b2be81978175e8b472fc7011d821f568
+          420032919 v0.3.3 506837c2bf40f2871f35da871a8a794d29907170
+          419162565 v0.2.2 b1116658edd14c2206331d27dcd13ac59c1e76c0
+          419155609 v0.2.1 4c3b009bb68794391c307ef0ed8b5577d7abc294
+          RELEASES
