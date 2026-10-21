@@ -1261,6 +1261,31 @@ textarea:focus-visible {
 .danger-button:hover {
   border-color: var(--danger);
 }
+.import-error {
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--danger-line);
+  border-radius: 8px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.import-error p {
+  margin: 7px 0;
+  color: var(--danger);
+}
+.import-error a {
+  color: var(--danger);
+  text-decoration: underline;
+}
+.import-error:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
 .danger-button.compact {
   min-height: 32px;
   padding: 7px 10px;

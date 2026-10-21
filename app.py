@@ -19,6 +19,7 @@ try:
     from tracker import importer
     from tracker.store import Store
     from tracker.courses import COURSES, load_course
+    from tracker.availability import AvailabilityChecker, CourseAvailabilityError
 except ImportError:
     raise SystemExit('Install dependencies first: python -m pip install --target .deps -r requirements.txt')
 
@@ -30,6 +31,7 @@ class Application:
         self.pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
         self.jobs = {}
         self.lock = threading.Lock()
+        self.availability = AvailabilityChecker()
         if not self.store.get('terms'):
             seed = ROOT / 'data' / 'calendar.json'
             if seed.exists():
@@ -47,7 +49,7 @@ class Application:
             try:
                 result = {'status': 'done', 'result': fn()}
             except Exception as exc:
-                result = {'status': 'error', 'error': str(exc)}
+                result = {'status': 'error', 'error': str(exc), 'error_code': getattr(exc, 'code', None), 'source': getattr(exc, 'source', None)}
             with self.lock:
                 self.jobs[key] = result
         self.pool.submit(work)
@@ -59,17 +61,18 @@ class Application:
         url = importer.course_url(code, quarter, year)
         course_id = f'{code}-{year}-{quarter}'
         previous = next((c for c in self.store.courses() if c['id'] == course_id), None)
+        availability = self.availability.validate(code, quarter, year)
         course = previous or {'id': course_id, 'code': code, 'quarter': quarter, 'year': year, 'url': url, 'title': code, 'events': [], 'materials': [], 'essentials': [], 'notes': '', 'warnings': []}
         try:
             html = importer.fetch(url).decode('utf-8', errors='replace')
             parsed = load_course(html, url, code, quarter, year)
         except urllib.error.HTTPError as exc:
             if exc.code == 404:
-                if previous and previous.get('events'):
-                    raise ValueError('Course page returned 404. Your saved agenda has been retained.')
-                course.update(status='unavailable', warnings=['Course page not available at the expected address. It may not be published yet; use Refresh to check again.'])
-                self.store.save_course(course)
-                return course
+                retained = ' Your saved course and agenda have been retained.' if previous else ' Nothing was added.'
+                raise CourseAvailabilityError(
+                    f'{code.replace("CSE", "CSE ", 1)} is listed for {quarter} {year}, but its public course website or linked calendar is unavailable.' + retained,
+                    'course_site_unavailable', availability['source'],
+                ) from exc
             raise
         old = {e['id']: e for e in course.get('events', [])}
         for event in parsed['events']:
@@ -78,6 +81,7 @@ class Application:
             prior = old.get(event['id'])
             event['changed_from'] = prior['date'] if prior and prior['date'] != event['date'] else (prior or {}).get('changed_from')
         course.update(parsed)
+        course['availability'] = availability
         course.update(status='ready' if parsed['events'] else 'review', checked=dt.datetime.now(dt.timezone.utc).isoformat())
         syllabus = next((e['url'] for e in parsed['essentials'] if 'syllabus' in e['label'].lower()), None)
         if syllabus:

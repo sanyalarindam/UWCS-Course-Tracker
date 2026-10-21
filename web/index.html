@@ -101,6 +101,23 @@
           class="course-options"
           aria-label="Course choices"
         ></div>
+        <div
+          id="course-error"
+          class="import-error"
+          role="alert"
+          tabindex="-1"
+          hidden
+        >
+          <strong>Course could not be added</strong>
+          <p id="course-error-message"></p>
+          <a
+            id="course-error-source"
+            target="_blank"
+            rel="noopener noreferrer"
+            hidden
+            >Check the official UW listing ↗</a
+          >
+        </div>
         <label
           >Course code<input
             id="course-code"
@@ -109,6 +126,7 @@
             required
             pattern="[Cc][Ss][Ee]\s*[0-9]{3}[A-Za-z]?"
             autocomplete="off"
+            aria-describedby="course-error-message"
         /></label>
         <div class="form-row">
           <label
@@ -133,8 +151,9 @@
           two most recent slide decks locally</label
         >
         <div class="info-box">
-          Past or future course? Just change the quarter. If the page isn’t
-          published yet, you can save the course and check again later.
+          Past or future course? Change the quarter. We’ll verify UW’s course
+          offerings before importing. Unavailable or unverified courses won’t be
+          added.
         </div>
         <div class="modal-actions">
           <button type="button" class="secondary close-dialog">Cancel</button

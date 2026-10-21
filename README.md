@@ -44,7 +44,9 @@ New workspaces start with **no courses**. The course chooser is a list of availa
 5. Open the course dashboard for its agenda, materials, slide findings, syllabus snippets, and private notes.
 6. Use **Refresh course** to check the public page again.
 
-If a future course page returns 404, the course is saved with an unavailable-schedule message so you can retry later.
+Before importing, the app checks [UW's public quarter offerings](https://www.washington.edu/students/timeschd/pub/AUT2026/cse.html) and, when needed, the [CSE course catalog](https://www.washington.edu/students/crscat/cse.html). Unknown codes and courses not offered in the selected quarter are rejected without creating a course card. A course that is listed but has a missing public website receives a separate error. If the quarter list is unpublished or cannot be verified, the app says so and does not add the course. Failed refreshes retain existing course data.
+
+Import errors remain visible in the chooser and link to the official listing used for the decision. Successful listing lookups are cached for 15 minutes within the running app; network failures are not cached. Historical offerings can be confirmed by their quarter list even if a course is no longer in the current catalog.
 
 ### Verified imports
 
@@ -111,6 +113,7 @@ app.py                   Local server, background import jobs, and launcher
 tracker/
   importer.py            Course discovery, calendar parsing, PDF analysis
   courses.py             Course choices, linked-page discovery, layout adapters
+  availability.py        Official catalog and quarter-offering validation
   store.py               SQLite persistence and workspace backups
 web/                     Dashboard interface and styles
 data/calendar.json       Official UW calendar snapshot
@@ -136,7 +139,7 @@ node --check web/app.js
 node --test tests/theme.test.cjs
 ```
 
-The 14 Python tests and five JavaScript theme tests cover empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, and saved appearance preferences.
+The 21 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, and saved appearance preferences.
 
 The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and optional pywebview mode still need platform testing.
 

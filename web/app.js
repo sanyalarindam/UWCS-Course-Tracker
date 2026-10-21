@@ -85,7 +85,12 @@ async function job(path, body, message) {
   for (;;) {
     await new Promise((r) => setTimeout(r, 650));
     const result = await api(`/api/jobs/${job}`);
-    if (result.status === "error") throw Error(result.error);
+    if (result.status === "error") {
+      const error = new Error(result.error);
+      error.code = result.error_code;
+      error.source = result.source;
+      throw error;
+    }
     if (result.status === "done") {
       await load();
       return result.result;
@@ -106,6 +111,7 @@ function allMaterials(cs = courses()) {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 function openAdd() {
+  clearCourseError();
   $("#course-form").reset();
   $("#course-code").value = "";
   $("#course-options").innerHTML = state.catalog
@@ -329,6 +335,7 @@ document.addEventListener("click", async (event) => {
   if (!b) return;
   try {
     if (b.dataset.pickCourse) {
+      clearCourseError();
       $("#course-code").value = prettyCode(b.dataset.pickCourse);
       syncCourseChoice();
     } else if (b.hasAttribute("data-theme-toggle")) {
@@ -409,6 +416,8 @@ document.addEventListener("click", async (event) => {
 });
 document.addEventListener("change", async (e) => {
   try {
+    if (["course-quarter", "course-year"].includes(e.target.id))
+      clearCourseError();
     if (e.target.id === "theme-preference") {
       await saveTheme(e.target.value);
     }
@@ -445,8 +454,15 @@ function filterMaterials() {
 }
 document.addEventListener("input", (e) => {
   if (e.target.id === "material-search") filterMaterials();
-  if (e.target.id === "course-code") syncCourseChoice();
+  if (e.target.id === "course-code") {
+    syncCourseChoice();
+    clearCourseError();
+  }
 });
+function clearCourseError() {
+  $("#course-error").hidden = true;
+  $("#course-code").removeAttribute("aria-invalid");
+}
 function syncCourseChoice() {
   const code = $("#course-code").value.replace(/\s+/g, "").toUpperCase();
   document.querySelectorAll("[data-pick-course]").forEach((button) => {
@@ -473,6 +489,7 @@ $("#course-form").onsubmit = async (e) => {
   body.scan_slides = form.elements.scan_slides.checked;
   const b = form.querySelector("[type=submit]");
   b.disabled = true;
+  clearCourseError();
   try {
     const result = await job(
       "/api/courses",
@@ -485,13 +502,20 @@ $("#course-form").onsubmit = async (e) => {
     detailTab = "agenda";
     $("#course-dialog").close();
     render();
-    toast(
-      result.status === "unavailable"
-        ? "Course saved. Its schedule is not available yet."
-        : "Course imported into your local workspace.",
-    );
+    toast("Course imported into your local workspace.");
   } catch (error) {
-    toast(error.message, 12000);
+    clearTimeout(toast.timer);
+    $("#toast").hidden = true;
+    $("#course-error-message").textContent = error.message;
+    const source = $("#course-error-source");
+    source.hidden = !error.source;
+    if (error.source) source.href = error.source;
+    $("#course-code").setAttribute(
+      "aria-invalid",
+      String(error.code === "course_not_found"),
+    );
+    $("#course-error").hidden = false;
+    $("#course-error").focus();
   } finally {
     b.disabled = false;
   }

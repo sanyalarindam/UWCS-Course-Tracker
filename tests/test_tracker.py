@@ -21,6 +21,10 @@ ARGS = {'code': 'CSE 312', 'quarter': 'Autumn', 'year': 2026}
 
 
 def fixture_fetch(url):
+    if '/students/crscat/' in url:
+        return (FIXTURES / 'availability/catalog.html').read_bytes()
+    if '/students/timeschd/pub/' in url:
+        return (FIXTURES / 'availability/aut2026.html').read_bytes()
     return (FIXTURES / ('syllabus.html' if 'syllabus' in url else 'cse312.html')).read_bytes()
 
 
@@ -83,16 +87,21 @@ class ImportTests(unittest.TestCase):
                 self.assertEqual(restored.completions(), reopened.completions())
             application.pool.shutdown()
 
-    def test_404_saves_future_course_and_network_error_preserves_old(self):
+    def test_404_rejects_new_course_and_preserves_existing_course(self):
         with tempfile.TemporaryDirectory(dir=TEST_DATA) as directory:
             application = app.Application(directory)
             error = urllib.error.HTTPError(URL, 404, 'Missing', {}, None)
-            with patch('tracker.importer.fetch', side_effect=error):
-                c = application.import_course(ARGS)
-            self.assertEqual(c['status'], 'unavailable')
+            def missing_site(url):
+                if '/students/' in url:
+                    return fixture_fetch(url)
+                raise error
+            with patch('tracker.importer.fetch', side_effect=missing_site):
+                with self.assertRaisesRegex(ValueError, 'website or linked calendar is unavailable'):
+                    application.import_course(ARGS)
+            self.assertEqual(application.store.courses(), [])
             with patch('tracker.importer.fetch', side_effect=fixture_fetch):
                 c = application.import_course(ARGS)
-            with patch('tracker.importer.fetch', side_effect=error):
+            with patch('tracker.importer.fetch', side_effect=missing_site):
                 with self.assertRaisesRegex(ValueError, 'retained'):
                     application.import_course(ARGS)
             self.assertEqual(application.store.courses()[0]['events'], c['events'])

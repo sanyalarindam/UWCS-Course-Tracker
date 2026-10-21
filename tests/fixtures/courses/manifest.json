@@ -11,5 +11,7 @@
   "https://courses.cs.washington.edu/courses/cse332/26au/": "332-home.html",
   "https://courses.cs.washington.edu/courses/cse332/26au/calendar.html": "332-calendar.html",
   "https://courses.cs.washington.edu/courses/cse312/26au/": "../cse312.html",
-  "https://courses.cs.washington.edu/courses/cse312/26au/syllabus.php": "../syllabus.html"
+  "https://courses.cs.washington.edu/courses/cse312/26au/syllabus.php": "../syllabus.html",
+  "https://www.washington.edu/students/crscat/cse.html": "../availability/catalog.html",
+  "https://www.washington.edu/students/timeschd/pub/AUT2026/cse.html": "../availability/aut2026.html"
 }
