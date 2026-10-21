@@ -1,4 +1,4 @@
-"""Build Windows and macOS icons from the supplied shared logo."""
+"""Build Windows and macOS icons from the original shared calendar-and-checkmark logo."""
 import argparse
 from pathlib import Path
 from PIL import Image

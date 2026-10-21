@@ -304,7 +304,7 @@ def make_handler(app):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='UWCS Tracker — private local course agenda')
+    parser = argparse.ArgumentParser(description='CS Tracker — private local course agenda')
     parser.add_argument('--port', type=int, default=0)
     parser.add_argument('--no-browser', action='store_true')
     parser.add_argument('--data-dir', type=Path)
@@ -314,7 +314,7 @@ def main():
     server = ThreadingHTTPServer(('127.0.0.1', args.port), make_handler(app))
     app.start_auto_refresh()
     url = f'http://127.0.0.1:{server.server_port}'
-    print(f'UWCS Tracker: {url}\nLocal data: {app.store.directory}\nPress Ctrl+C to stop.', flush=True)
+    print(f'CS Tracker: {url}\nLocal data: {app.store.directory}\nPress Ctrl+C to stop.', flush=True)
     if args.desktop:
         try:
             import webview

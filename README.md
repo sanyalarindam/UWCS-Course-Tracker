@@ -1,8 +1,18 @@
 # CS Tracker
 
+**An independent course planner for UW students.**
+
+Not affiliated with, endorsed by, or sponsored by the University of Washington or the Paul G. Allen School.
+
 A local course dashboard for University of Washington CSE students. Bring public course schedules, assignments, exams, and class materials into one workspace, with your notes and progress saved on your own device.
 
 **Status:** working prototype, verified against CSE 123, 311, 351, 331, 332, and 312 for Autumn 2026. Runs with Python on Windows, macOS, and Linux; standalone Windows x64 and macOS (Apple Silicon and Intel) installers are built by GitHub Actions. Mobile installers are not included.
+
+## Video tutorial
+
+**[Watch the CS Tracker walkthrough on YouTube](https://youtu.be/dTVcxg1it28)**
+
+See the dashboard, course-detail tabs, assignments, materials search, prerequisite map, future-quarter planning, degree progress, and local settings in action. The walkthrough uses a demonstration workspace and the original CS Tracker icon.
 
 ## Features
 
@@ -31,7 +41,7 @@ No account, hosted database, analytics, or AI API key is required.
 
 1. Open [GitHub Releases](https://github.com/sanyalarindam/UWCS-Course-Tracker/releases/latest).
 2. Download **CS-Tracker-Setup-VERSION-Windows-x64.exe** from the release assets.
-3. Run Setup, then open **CS Tracker** from the Start menu. An optional desktop shortcut is available. The app, taskbar window, Start menu shortcut, and installer use the purple W app icon.
+3. Run Setup, then open **CS Tracker** from the Start menu. An optional desktop shortcut is available. The app, taskbar window, Start menu shortcut, and installer use the original calendar-and-checkmark app icon.
 
 The installer includes Python and the required libraries; you do not need Python, Git, or a terminal to run the installed app. It opens in its own desktop window on Windows 10/11 x64. Setup checks/installs Microsoft Edge WebView2 Runtime using Microsoft's bootstrapper; internet access may be needed. The initial installer is not code-signed, so Windows may display an unrecognized-app warning. Release assets include **SHA256SUMS.txt** for checksum verification.
 
@@ -39,7 +49,7 @@ Each Windows user has a separate workspace at `%LOCALAPPDATA%/UWCS Tracker`. Upd
 
 ### Update an existing installation
 
-Close CS Tracker, download the latest installer, and run it over the existing installation. The installer keeps the same application identity and preserves your local workspace. Releases from **v0.2.2** onward include the purple W logo in the executable, app window/taskbar, Start menu and desktop shortcuts, and Setup. Reinstalling an older release will not add the new icon.
+Close CS Tracker, download the latest installer, and run it over the existing installation. The installer keeps the same application identity and preserves your local workspace. New builds use the original calendar-and-checkmark icon in the executable, app window/taskbar, shortcuts, and Setup. Older published installers may still show previous branding; use the newest release built from the current source. Historical releases and Git history are not rewritten by this branding update.
 
 The data folder retains its original `UWCS Tracker` name for compatibility; the installed app and shortcuts are named **CS Tracker**.
 
@@ -270,7 +280,7 @@ node --test tests/theme.test.cjs
 
 The 41 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
 
-The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and source-based desktop mode still need additional platform testing.
+The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. GitHub Actions also tests and smoke-tests the packaged app on Windows, Apple Silicon macOS, and Intel macOS. Interactive macOS/Linux testing remains limited.
 
 Exam logistics are extracted from explicit calendar entries and up to three same-offering linked HTML exam/syllabus pages. Missing or conflicting details remain unspecified; lecture rooms are not assumed to be exam rooms. Refresh existing courses to retrieve newly published exam details. PDF-only exam logistics are not automatically extracted by this importer.
 
@@ -282,8 +292,8 @@ Exam logistics are extracted from explicit calendar entries and up to three same
 - Syllabus rules appear as policy snippets. Recurring concept-check deadlines are not inferred.
 - Current-quarter refreshes run automatically while the app is running; other quarters use manual refresh. Operating-system background refresh, push notifications, automatic device sync, and signed installers are future work.
 
-UWCS Tracker is an independent student project and is not affiliated with the University of Washington. Check original course materials for authoritative deadlines.
+CS Tracker is an independent student project. Not affiliated with, endorsed by, or sponsored by the University of Washington or the Paul G. Allen School. Check original course materials for authoritative deadlines.
 
 ## Branding assets
 
-The interface, browser favicon, Windows executable/installer, and macOS app icon are all built from `web/assets/logo.png`, the UW mark supplied by the project maintainer. This mark is not original project artwork, and its inclusion does not imply UW endorsement or grant permission to reuse UW trademarks. The project is independently maintained.
+CS Tracker uses an original navy-and-teal calendar/checkmark icon, with an editable vector in `web/assets/logo.svg` and a shared raster in `web/assets/logo.png`. The interface, favicon, Windows executable/installer, and macOS app icon use this shared artwork. No official UW logo is included in the current branding. References to UW describe the students and course sources supported by this independently maintained project.

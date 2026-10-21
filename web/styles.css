@@ -1333,7 +1333,7 @@ input[aria-invalid="true"] {
   line-height: 1.5;
 }
 
-/* Use the supplied square mark without changing its proportions. */
+/* Use the original calendar/checkmark icon without changing its proportions. */
 .brand-mark {
   width: 44px;
   height: 44px;
