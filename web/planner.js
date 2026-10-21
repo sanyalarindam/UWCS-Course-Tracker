@@ -261,7 +261,18 @@
   function requirements() {
     const r = state.planner.requirements;
     if (state.planner.profile.major === "explore") return "";
-    return `<details class="planner-requirements panel"><summary>Degree progress <span>Self-reported progress</span></summary><div class="requirement-grid"><div><h3>Fundamentals · ${r.fundamentals_done}/6</h3>${r.fundamentals.map((g) => `<p class="requirement-line ${g.done ? "is-complete" : ""}"><span>${g.done ? "✓" : "○"}</span>${g.any_of.map(label).map(escape).join(" or ")}</p>`).join("")}</div><div><h3>Core & electives</h3><p>${r.core_done}/6 core courses · ${r.upper_core_done}/4 at the CSE 400 level</p><p>${r.extra_core_or_capstone_done ? "✓" : "○"} One additional core course or a confirmed capstone</p><p>${r.elective_credits}/33 additional core/elective credits</p><p>${r.science_credits}/5 approved natural science credits</p></div><div><h3>Mathematics · either route</h3>${r.math_routes.map((route) => `<p>${route.done}/${route.courses.length}: ${route.courses.map(label).map(escape).join(", ")}</p>`).join("")}<p class="note">Math and fundamentals below 2.0 do not satisfy these checkpoints. Missing grades require review.</p></div></div><p class="note planner-scope">Based on the published UW CS general catalog and core-course list. This tracks selected major requirements, not general education, total degree credits, GPA, admission status, or an official graduation audit. ${r.variable_credit_review.length ? "Variable-credit courses need their actual section credits recorded under other approved elective credits. " : ""}${sourceLink(state.planner.sources.requirements, "Official degree requirements")} · ${sourceLink(state.planner.sources.core, "Core course list")}</p></details>`;
+    return `<details class="planner-requirements panel"><summary>Degree progress <span>Self-reported progress</span></summary><div class="requirement-grid"><div><h3>Fundamentals · ${r.fundamentals_done}/6</h3>${r.fundamentals
+      .map((g) => {
+        const inProgress =
+          !g.done &&
+          g.any_of.some((code) =>
+            state.planner.current_courses?.includes(code),
+          );
+        return `<p class="requirement-line ${g.done ? "is-complete" : inProgress ? "is-in-progress" : ""}"><span aria-hidden="true">${g.done ? "✓" : inProgress ? "◷" : "○"}</span>${g.any_of.map(label).map(escape).join(" or ")}${inProgress ? '<small class="requirement-progress-badge">In progress</small>' : ""}</p>`;
+      })
+      .join(
+        "",
+      )}</div><div><h3>Core & electives</h3><p>${r.core_done}/6 core courses · ${r.upper_core_done}/4 at the CSE 400 level</p><p>${r.extra_core_or_capstone_done ? "✓" : "○"} One additional core course or a confirmed capstone</p><p>${r.elective_credits}/33 additional core/elective credits</p><p>${r.science_credits}/5 approved natural science credits</p></div><div><h3>Mathematics · either route</h3>${r.math_routes.map((route) => `<p>${route.done}/${route.courses.length}: ${route.courses.map(label).map(escape).join(", ")}</p>`).join("")}<p class="note">Math and fundamentals below 2.0 do not satisfy these checkpoints. Missing grades require review.</p></div></div><p class="note planner-scope">Based on the published UW CS general catalog and core-course list. This tracks selected major requirements, not general education, total degree credits, GPA, admission status, or an official graduation audit. ${r.variable_credit_review.length ? "Variable-credit courses need their actual section credits recorded under other approved elective credits. " : ""}${sourceLink(state.planner.sources.requirements, "Official degree requirements")} · ${sourceLink(state.planner.sources.core, "Core course list")}</p></details>`;
   }
 
   function suggestions() {

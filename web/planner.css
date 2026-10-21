@@ -621,3 +621,16 @@
   padding: 64px 24px 24px;
   text-align: left;
 }
+
+.requirement-line.is-in-progress {
+  color: var(--current, #83b9ed);
+}
+.requirement-progress-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  font-size: 10px;
+  line-height: 1.4;
+}
