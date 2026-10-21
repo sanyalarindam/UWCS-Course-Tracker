@@ -94,10 +94,12 @@ def requirement_progress(catalog, profile):
     elective = [c for c in catalog['courses'] if c['code'] in codes and c['code'] not in fundamental_codes and (c['core'] or c['code'].startswith('CSE4'))]
     credits = sum(c['credits'] or 0 for c in elective) + profile['other_elective_credits']
     routes = [{'courses': route, 'done': sum(code in grade_qualified for code in route)} for route in catalog['math_routes']]
+    science_options = [option for option in catalog.get('science_options', []) if set(option['all_of']).issubset(codes)]
+    science_from_courses = min(5, sum(option['credits'] for option in science_options))
     return {'fundamentals': fundamentals, 'fundamentals_done': sum(g['done'] for g in fundamentals),
             'core_done': len(core), 'upper_core_done': len(upper), 'elective_credits': credits,
             'extra_core_or_capstone_done': len(core) >= 7 or profile['capstone_confirmed'],
-            'science_credits': profile['science_credits'], 'math_routes': routes,
+            'science_credits': min(5, science_from_courses + profile['science_credits']), 'science_course_credits': science_from_courses, 'science_courses': sorted({code for option in science_options for code in option['all_of']}), 'math_routes': routes,
             'grade_review': [r['code'] for r in profile['completed'] if r['grade'] is None],
             'variable_credit_review': [c['code'] for c in elective if c['credits'] is None]}
 

@@ -89,6 +89,20 @@ class PlannerTests(unittest.TestCase):
         self.assertFalse(codes.intersection({'CSE123', 'CSE311', 'CSE312', 'CSE332', 'CSE351', 'CSE446'}))
         self.assertTrue(any(any('Matches' in reason for reason in s['reasons']) for s in result['suggestions']))
 
+    def test_science_courses_count_automatically_and_require_lab_pair(self):
+        for code in ('PHYS121', 'PHYS141', 'CHEM142', 'CHEM143', 'CHEM145', 'BIOL180', 'BIOL162'):
+            normalized = planner.normalize_profile(profile(code), CATALOG)
+            self.assertEqual(planner.requirement_progress(CATALOG, normalized)['science_credits'], 5)
+        self.assertEqual(planner.requirement_progress(CATALOG, profile('PHYS116'))['science_credits'], 0)
+        self.assertEqual(planner.requirement_progress(CATALOG, profile('PHYS116', 'PHYS119'))['science_credits'], 5)
+        p = profile('PHYS121', 'PHYS141')
+        p['science_credits'] = 5
+        self.assertEqual(planner.requirement_progress(CATALOG, p)['science_credits'], 5)
+        p['completed'] = [{'code':'PHYS121','grade':0}]
+        p['science_credits'] = 0
+        self.assertEqual(planner.requirement_progress(CATALOG, p)['science_credits'], 0)
+        self.assertEqual(planner.requirement_progress(CATALOG, profile())['science_credits'], 0)
+
     def test_validation_and_source_coverage(self):
         with self.assertRaises(ValueError): planner.normalize_plan([entry('CSE311'), entry('CSE311','Spring')], CATALOG)
         with self.assertRaises(ValueError): planner.normalize_profile(profile('CSE999'), CATALOG)

@@ -76,7 +76,7 @@ Open **Course planner** in the sidebar. It defaults to **UW Seattle Computer Sci
 4. Choose **Plan into** and add courses to future quarters. Remove an entry before moving it to a different quarter.
 5. Review prerequisite conflicts and **Degree progress**. Import a schedule separately when its quarter is published.
 
-The bundled catalog snapshot contains 66 courses and supporting prerequisite nodes, sourced from the [UW CSE catalog](https://www.washington.edu/students/crscat/cse.html), [CS degree requirements](https://www.washington.edu/students/gencat/program/S/ComputerScience-210.html), and [core list](https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/). Each course links to its official source. Interest tags and ranking are app-defined. This snapshot is curated, not a live catalog sync; external and unmodeled courses explicitly require a catalog check.
+The bundled catalog snapshot contains 75 courses and supporting prerequisite nodes, sourced from the [UW CSE catalog](https://www.washington.edu/students/crscat/cse.html), [CS degree requirements](https://www.washington.edu/students/gencat/program/S/ComputerScience-210.html), and [core list](https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/). Each course links to its official source. Interest tags and ranking are app-defined. This snapshot is curated, not a live catalog sync; external and unmodeled courses explicitly require a catalog check.
 
 Completed history is self-reported, separate from assignment checkboxes and imported schedules. Future-quarter suggestions and course-map readiness provisionally include imported courses from the current UW quarter, with successful-completion assumptions shown. They do not increase degree progress or change completed history. Later planned quarters also consider valid earlier plans, with those assumptions shown. Same-quarter prerequisites do not qualify. Minimum grades are checked where modeled; missing grades prompt review. A tentative plan never confirms an offering, registration eligibility, or seat availability.
 
@@ -93,6 +93,12 @@ Degree progress counts **completed courses recorded in your history**, rather th
 - Recorded math and fundamental courses with grades below 2.0 do not satisfy their checkpoints. Blank grades count provisionally and require review.
 
 **Example:** If you recorded MATH 126 and MATH 208, the tracker shows **2/4**. If your UW record also awards credit for MATH 124 and MATH 125, enter those equivalents to reflect that history; the tracker then shows **4/4**. This is a record of your entries, not an official degree-audit result.
+
+### Record natural science courses
+
+Add PHYS 121 or 141, CHEM 142/143/145, BIOL 180, or awarded BIOL 162 AP credit through **Completed courses**. They automatically contribute to the CS natural science requirement. PHYS 116 and PHYS 119 count only when both are completed. Removing a completion removes its contribution; failed courses do not count. Progress is capped at the required five credits.
+
+Use **Other approved natural science credits** for adviser-approved credit outside these options, excluding courses already recorded. Previously entered manual science credits are preserved. The [official CS science list](https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/) is narrower than UW's general Natural Sciences designation.
 
 ### Plan around courses in progress
 
@@ -177,7 +183,7 @@ node --check web/planner.js
 node --test tests/theme.test.cjs
 ```
 
-The 31 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
+The 32 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
 
 The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and optional pywebview mode still need platform testing.
 

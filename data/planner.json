@@ -4,7 +4,8 @@
     "catalog": "https://www.washington.edu/students/crscat/cse.html",
     "requirements": "https://www.washington.edu/students/gencat/program/S/ComputerScience-210.html",
     "core": "https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/",
-    "pathways": "https://www.cs.washington.edu/academics/undergraduate/degree-requirements/computing-specializations/"
+    "pathways": "https://www.cs.washington.edu/academics/undergraduate/degree-requirements/computing-specializations/",
+    "science": "https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/#cs-natural-science-requirement"
   },
   "interests": [
     {
@@ -1507,6 +1508,183 @@
       "source": "https://www.washington.edu/students/crscat/cse.html#cse414",
       "core": false,
       "notes": "Track approved transfer or equivalent credit after confirming the equivalency."
+    },
+    {
+      "code": "PHYS121",
+      "name": "Mechanics",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/phys.html#phys121",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    },
+    {
+      "code": "PHYS141",
+      "name": "Honors Mechanics",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/phys.html#phys141",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    },
+    {
+      "code": "PHYS116",
+      "name": "Waves, Optics, Atoms and Nuclei",
+      "credits": 4,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/phys.html#phys116",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    },
+    {
+      "code": "PHYS119",
+      "name": "General Physics Laboratory: Sound, Light, and Modern Physics",
+      "credits": 1,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/phys.html#phys119",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    },
+    {
+      "code": "CHEM142",
+      "name": "General Chemistry I",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/chem.html#chem142",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    },
+    {
+      "code": "CHEM143",
+      "name": "Accelerated General Chemistry I",
+      "credits": 6,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/chem.html#chem143",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    },
+    {
+      "code": "CHEM145",
+      "name": "Honors General Chemistry",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/chem.html#chem145",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    },
+    {
+      "code": "BIOL180",
+      "name": "Introductory Biology",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/biology.html#biol180",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    },
+    {
+      "code": "BIOL162",
+      "name": "Advanced Placement in General Biology 2",
+      "credits": 5,
+      "tags": [],
+      "prerequisites": [],
+      "prerequisite_text": "Science course prerequisites are not modeled. Check the official catalog.",
+      "recommended": [],
+      "external": true,
+      "modeled": false,
+      "source": "https://www.washington.edu/students/crscat/biology.html#biol162",
+      "core": false,
+      "notes": "Counts toward the CS natural science requirement. PHYS 116 and 119 must both be completed; BIOL 162 requires awarded AP credit. Record only credit actually earned."
+    }
+  ],
+  "science_options": [
+    {
+      "all_of": [
+        "PHYS121"
+      ],
+      "credits": 5
+    },
+    {
+      "all_of": [
+        "PHYS141"
+      ],
+      "credits": 5
+    },
+    {
+      "all_of": [
+        "CHEM142"
+      ],
+      "credits": 5
+    },
+    {
+      "all_of": [
+        "CHEM143"
+      ],
+      "credits": 6
+    },
+    {
+      "all_of": [
+        "CHEM145"
+      ],
+      "credits": 5
+    },
+    {
+      "all_of": [
+        "BIOL180"
+      ],
+      "credits": 5
+    },
+    {
+      "all_of": [
+        "BIOL162"
+      ],
+      "credits": 5
+    },
+    {
+      "all_of": [
+        "PHYS116",
+        "PHYS119"
+      ],
+      "credits": 5
     }
   ]
 }
