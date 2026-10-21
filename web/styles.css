@@ -1318,3 +1318,17 @@ input[aria-invalid="true"] {
     align-items: flex-start;
   }
 }
+
+#updates-dialog {
+  width: min(720px, calc(100vw - 32px));
+  max-height: 85vh;
+  overflow: auto;
+}
+.update-entry {
+  padding: 14px;
+  margin: 12px 0;
+}
+.update-entry li {
+  margin: 8px 0;
+  line-height: 1.5;
+}

@@ -27,6 +27,7 @@ class Store:
                 CREATE TABLE IF NOT EXISTS courses(id TEXT PRIMARY KEY, body TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS completions(id TEXT PRIMARY KEY, done INTEGER NOT NULL);
                 CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS undo_actions(id INTEGER PRIMARY KEY AUTOINCREMENT, label TEXT NOT NULL, body TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS analyses(url TEXT PRIMARY KEY, body TEXT NOT NULL);
             ''')
 
@@ -100,6 +101,7 @@ class Store:
                 raise ValueError('Invalid planner backup.')
             planner = {'profile': normalize_profile(planner.get('profile', {}), catalog), 'plan': normalize_plan(planner.get('plan', []), catalog)}
         with self.connect() as db:
+            db.execute("DELETE FROM undo_actions")
             if planner is not None:
                 db.executemany('INSERT OR REPLACE INTO settings VALUES (?,?)', [('planner_profile', json.dumps(planner['profile'])), ('planner_plan', json.dumps(planner['plan']))])
             for course in payload['courses']:
@@ -108,3 +110,52 @@ class Store:
                 db.execute('INSERT OR REPLACE INTO completions VALUES (?,?)', (event_id, bool(done)))
             for url, analysis in payload.get('analyses', {}).items():
                 db.execute('INSERT OR REPLACE INTO analyses VALUES (?,?)', (url, json.dumps(analysis)))
+
+    def mutate_with_undo(self, kind, args):
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            if kind == 'delete':
+                row = db.execute('SELECT body FROM courses WHERE id=?', (args['id'],)).fetchone()
+                if not row: raise ValueError('Course not found.')
+                body = {'kind':'course', 'course':json.loads(row[0])}
+                label = 'Remove ' + body['course']['code']
+                db.execute('DELETE FROM courses WHERE id=?', (args['id'],))
+            elif kind == 'completion':
+                row = db.execute('SELECT done FROM completions WHERE id=?', (args['id'],)).fetchone()
+                body = {'kind':'completion', 'id':args['id'], 'previous':row[0] if row else None}
+                label = 'Assignment completion'
+                db.execute('INSERT OR REPLACE INTO completions VALUES (?,?)', (args['id'], bool(args['done'])))
+            elif kind == 'planner':
+                rows = {key: value for key, value in db.execute("SELECT key,value FROM settings WHERE key IN ('planner_profile','planner_plan')")}
+                body = {'kind':'planner', 'previous':rows}
+                label = 'Planner change'
+                db.executemany('INSERT OR REPLACE INTO settings VALUES (?,?)', [('planner_profile',json.dumps(args['profile'])),('planner_plan',json.dumps(args['plan']))])
+            else: raise ValueError('Unsupported undo action.')
+            db.execute('INSERT INTO undo_actions(label,body) VALUES (?,?)', (label,json.dumps(body)))
+            db.execute('DELETE FROM undo_actions WHERE id NOT IN (SELECT id FROM undo_actions ORDER BY id DESC LIMIT 20)')
+
+    def undo_status(self):
+        with self.connect() as db:
+            row = db.execute('SELECT label FROM undo_actions ORDER BY id DESC LIMIT 1').fetchone()
+            return row[0] if row else None
+
+    def undo(self):
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            row = db.execute('SELECT id,label,body FROM undo_actions ORDER BY id DESC LIMIT 1').fetchone()
+            if not row: raise ValueError('Nothing to undo.')
+            action = json.loads(row[2])
+            if action['kind'] == 'course':
+                c = action['course']
+                if db.execute('SELECT 1 FROM courses WHERE id=?',(c['id'],)).fetchone():
+                    raise ValueError('This course has already been added again. Undo would overwrite it.')
+                db.execute('INSERT INTO courses VALUES (?,?)', (c['id'],json.dumps(c)))
+            elif action['kind'] == 'completion':
+                if action['previous'] is None: db.execute('DELETE FROM completions WHERE id=?',(action['id'],))
+                else: db.execute('INSERT OR REPLACE INTO completions VALUES (?,?)',(action['id'],action['previous']))
+            elif action['kind'] == 'planner':
+                for key in ('planner_profile','planner_plan'):
+                    if key in action['previous']: db.execute('INSERT OR REPLACE INTO settings VALUES (?,?)',(key,action['previous'][key]))
+                    else: db.execute('DELETE FROM settings WHERE key=?',(key,))
+            db.execute('DELETE FROM undo_actions WHERE id=?',(row[0],))
+            return row[1]

@@ -19,6 +19,8 @@ A local course dashboard for University of Washington CSE students. Bring public
 - Saves personal completion checkboxes and course notes in SQLite.
 - Optionally analyzes the two most recent PDF slide decks when importing a course; other decks can be analyzed individually.
 - Flags slide passages mentioning deadlines, assignments, exams, or announcements, with page references for review.
+- Supports Undo for the last 20 course-removal, assignment-completion, and planner changes, saved across restarts.
+- Automatically refreshes current-quarter courses every 30 minutes while the app runs, with a course-update history.
 - Preserves saved data when refreshes fail, highlights changed dates, and supports JSON backup export/import.
 
 No account, hosted database, analytics, or AI API key is required.
@@ -131,6 +133,14 @@ python app.py --desktop
 
 pywebview may require web-engine dependencies on your operating system. This optional mode has not been verified on every platform. Browser mode works without it.
 
+## Undo and automatic refresh
+
+Use **Undo** in the top bar to reverse the latest course removal, assignment checklist change, or planner history/preferences/plan change. Undo restores removed courses with their notes; existing assignment completion marks are retained. The last 20 actions survive restarts. Imports, refreshes, backup restores, notes, appearance changes, and automatic-refresh settings are not undoable. Importing a backup clears undo history so older actions cannot overwrite restored data. Undo refuses to overwrite a removed course that has since been added again.
+
+Automatic refresh is enabled by default. While the local app is running, it checks imported **current-quarter** courses every 30 minutes, beginning within a minute of startup when due. Past and future courses remain manual. Disable it in **Local settings → Automatic course refresh**. Refreshing does not run PDF analysis or mark work complete.
+
+Open **Course updates** in the top bar for new agenda items, changed dates/exam times/locations, removed listings, new materials, and refresh errors. The latest 20 course reports are stored locally. Failed refreshes keep saved course data, notes, and completions. Update notifications poll every 30 seconds while the browser tab is visible; open Course updates to retrieve the latest state. Editors are not automatically replaced while you are working in a course or planner. The app must remain running; this is not an operating-system background service.
+
 ## Privacy and local storage
 
 Each installation stores its own workspace. Default data locations:
@@ -197,7 +207,7 @@ node --check web/planner.js
 node --test tests/theme.test.cjs
 ```
 
-The 36 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
+The 41 Python tests and five JavaScript theme tests cover course existence and quarter availability, missing websites, unpublished listings, network failures, empty startup, explicit course selection, all six calendar formats, quarter and break boundaries, mismatched offerings, URL restrictions, completion persistence across date changes, backups, failed refresh preservation, slide page references, local HTTP request protections, saved appearance preferences, planner API persistence, AND/OR prerequisites, minimum grades, recommended preparation, quarter ordering, requirement counts, suggestion exclusions, and planner backups.
 
 The app has been checked on Windows against all six live Autumn 2026 course pages and real linked PDF slides. Validation imports run in an isolated workspace and are never seeded into the user's dashboard. macOS/Linux and optional pywebview mode still need platform testing.
 
@@ -209,6 +219,6 @@ Exam logistics are extracted from explicit calendar entries and up to three same
 - The parser supports the six tested layouts, including bounded discovery of linked calendar pages and CSE 311's declared navigation configuration. Other websites may need dedicated parsers; unsupported schedules are flagged for review.
 - Slide analysis uses text extraction and keyword matching, not semantic AI analysis. Image-only slides, diagrams, and OCR are not supported. Scans can miss information; findings do not automatically become deadlines.
 - Syllabus rules appear as policy snippets. Recurring concept-check deadlines are not inferred.
-- Course refreshes are manual. Scheduled refreshes, notifications, automatic device sync, and signed installers are future work.
+- Current-quarter refreshes run automatically while the app is running; other quarters use manual refresh. Operating-system background refresh, push notifications, automatic device sync, and signed installers are future work.
 
 UWCS Tracker is an independent student project and is not affiliated with the University of Washington. Check original course materials for authoritative deadlines.

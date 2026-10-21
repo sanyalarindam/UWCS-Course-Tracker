@@ -15,7 +15,7 @@
     <aside class="sidebar">
       <a class="brand" href="/" aria-label="UWCS Tracker home"
         ><span class="brand-mark">W</span
-        ><span>UWCS<span class="brand-sub">TRACKER</span></span></a
+        ><span>CS<span class="brand-sub">TRACKER</span></span></a
       >
       <div class="workspace-label">YOUR WORKSPACE</div>
       <nav>
@@ -40,6 +40,22 @@
       <header class="topbar">
         <span id="breadcrumb">Workspace / Current courses</span>
         <div class="topbar-actions">
+          <button
+            type="button"
+            class="secondary"
+            id="refresh-updates"
+            data-action="updates"
+          >
+            Course updates</button
+          ><button
+            type="button"
+            class="secondary"
+            id="undo-action"
+            data-action="undo"
+            hidden
+          >
+            ↶ Undo
+          </button>
           <span class="privacy-pill"
             ><span class="local-dot"></span> Stored locally</span
           ><button
@@ -81,6 +97,23 @@
         </footer>
       </div>
     </main>
+    <dialog id="updates-dialog">
+      <div class="modal-heading">
+        <h2>Course updates</h2>
+        <button
+          type="button"
+          class="icon-button"
+          data-action="close-updates"
+          aria-label="Close updates"
+        >
+          ×
+        </button>
+      </div>
+      <div id="updates-content"></div>
+      <button type="button" class="secondary" data-action="clear-updates">
+        Clear update history
+      </button>
+    </dialog>
     <dialog id="course-dialog">
       <form id="course-form">
         <div class="modal-heading">

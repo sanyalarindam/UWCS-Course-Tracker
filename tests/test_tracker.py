@@ -175,6 +175,15 @@ class ServerTests(unittest.TestCase):
                 with urllib.request.urlopen(request) as response:
                     self.assertEqual(response.status, 200)
                 self.assertTrue(application.store.completions()['test'])
+                undo = urllib.request.Request(base + '/api/undo', data=b'{}', headers={'Content-Type':'application/json','X-UWCS-Token':state['token']})
+                with urllib.request.urlopen(undo) as response:
+                    self.assertEqual(json.load(response)['undone'], 'Assignment completion')
+                self.assertNotIn('test', application.store.completions())
+                toggle = urllib.request.Request(base + '/api/auto-refresh', data=b'{"enabled":false}', headers={'Content-Type':'application/json','X-UWCS-Token':state['token']})
+                with urllib.request.urlopen(toggle) as response:
+                    self.assertEqual(response.status, 200)
+                self.assertFalse(application.state()['preferences']['auto_refresh'])
+
                 evil = urllib.request.Request(base + '/api/state', headers={'Host':'evil.example'})
                 with self.assertRaises(urllib.error.HTTPError):
                     urllib.request.urlopen(evil)

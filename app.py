@@ -32,6 +32,9 @@ class Application:
         self.pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
         self.jobs = {}
         self.lock = threading.Lock()
+        self.course_lock = threading.RLock()
+        self.refresh_stop = threading.Event()
+        self.refresh_lock = threading.Lock()
         self.availability = AvailabilityChecker()
         self.planner_catalog = json.loads((ROOT / 'data/planner.json').read_text(encoding='utf-8'))
         if not self.store.get('terms'):
@@ -44,7 +47,7 @@ class Application:
         courses = self.store.courses()
         term = importer.current_term(self.store.get('terms', []), today)
         planning = planner.build_state(self.planner_catalog, self.store.get('planner_profile', planner.default_profile()), self.store.get('planner_plan', []), courses, term)
-        return {'courses': courses, 'catalog': COURSES, 'planner': planning, 'completions': self.store.completions(), 'analyses': self.store.analyses(), 'term': term, 'terms': self.store.get('terms', []), 'today': today.isoformat(), 'data_path': str(self.store.directory), 'calendar_checked': self.store.get('calendar_checked'), 'calendar_source': importer.CALENDAR_URL, 'preferences': {'theme': self.store.get('theme', 'system')}, 'token': self.token}
+        return {'courses': courses, 'catalog': COURSES, 'planner': planning, 'completions': self.store.completions(), 'analyses': self.store.analyses(), 'term': term, 'terms': self.store.get('terms', []), 'today': today.isoformat(), 'data_path': str(self.store.directory), 'calendar_checked': self.store.get('calendar_checked'), 'calendar_source': importer.CALENDAR_URL, 'undo': self.store.undo_status(), 'auto_refresh': self.store.get('auto_refresh_status', {}), 'refresh_updates': self.store.get('refresh_updates', []), 'preferences': {'theme': self.store.get('theme', 'system'), 'auto_refresh': self.store.get('auto_refresh_enabled', True)}, 'token': self.token}
 
     def job(self, fn):
         key = secrets.token_hex(8)
@@ -79,6 +82,8 @@ class Application:
                     'course_site_unavailable', availability['source'],
                 ) from exc
             raise
+        if args.get('automatic') and previous and previous.get('events') and not parsed['events']:
+            raise ValueError('No agenda entries found during automatic refresh; saved course data retained for review.')
         old = {e['id']: e for e in course.get('events', [])}
         for event in parsed['events']:
             identity = f"{course_id}|{event['kind']}|{event['title']}"
@@ -96,7 +101,11 @@ class Application:
                 course['policies'] = [{'text': li.get_text(' ', strip=True), 'url': syllabus} for li in content.select('li') if any(w in li.get_text().lower() for w in ('due', 'late days', 'final exam', 'midterm'))][-15:]
             except Exception as exc:
                 course['warnings'].append(f'Syllabus could not be refreshed: {exc}')
-        self.store.save_course(course)
+        with self.course_lock:
+            latest = next((c for c in self.store.courses() if c['id'] == course_id), None)
+            if previous and latest is None: raise ValueError('Course was removed during refresh; it was not added again.')
+            if latest: course['notes'] = latest.get('notes', '')
+            self.store.save_course(course)
         # Recent slides are analyzed locally; older decks remain available on demand.
         if args.get('scan_slides'):
             recent = sorted([m for m in course['materials'] if m['kind'] == 'slides' and urllib.parse.urlsplit(m['url']).path.lower().endswith('.pdf') and m['date'] <= importer.today_seattle().isoformat()], key=lambda m: m['date'], reverse=True)[:2]
@@ -108,6 +117,50 @@ class Application:
             course['scan_slides'] = True
             self.store.save_course(course)
         return course
+
+    def refresh_due_courses(self, now=None):
+        if not self.store.get('auto_refresh_enabled', True) or not self.refresh_lock.acquire(blocking=False): return
+        now = now or dt.datetime.now(dt.timezone.utc)
+        try:
+            status = self.store.get('auto_refresh_status', {})
+            if status.get('checked') and (now - dt.datetime.fromisoformat(status['checked'])).total_seconds() < 1800: return
+            term = importer.current_term(self.store.get('terms', []), importer.today_seattle())
+            courses = [c for c in self.store.courses() if term and c['quarter'] == term['quarter'] and c['year'] == term['year']]
+            if not courses: return
+            self.store.set('auto_refresh_status', {'running':True, 'checked':now.isoformat()})
+            updates = []
+            for old in courses:
+                if self.refresh_stop.is_set(): break
+                if not self.store.get('auto_refresh_enabled', True): break
+                if not any(c['id'] == old['id'] for c in self.store.courses()): continue
+                try:
+                    fresh = self.import_course({**old, 'scan_slides':False, 'automatic':True})
+                    before = {e['id']:e for e in old['events']}
+                    after = {e['id']:e for e in fresh['events']}
+                    changes = []
+                    for key,e in after.items():
+                        if key not in before: changes.append('New: ' + e['title'])
+                        else:
+                            fields = [f for f in ('date','time','location') if before[key].get(f) != e.get(f)]
+                            if fields: changes.append(e['title'] + ': ' + ', '.join(f + ' changed from ' + str(before[key].get(f) or 'unspecified') + ' to ' + str(e.get(f) or 'unspecified') for f in fields))
+                    for key,e in before.items():
+                        if key not in after: changes.append('No longer listed: ' + e['title'])
+                    added = len({m['url'] for m in fresh['materials']} - {m['url'] for m in old['materials']})
+                    if added: changes.append(str(added) + ' new materials')
+                    if changes: updates.append({'course':old['code'],'checked':now.isoformat(),'changes':changes,'url':old['url']})
+                except Exception as exc:
+                    updates.append({'course':old['code'],'checked':now.isoformat(),'error':str(exc),'url':old['url']})
+            if updates: self.store.set('refresh_updates', (updates + self.store.get('refresh_updates', []))[:20])
+            self.store.set('auto_refresh_status', {'running':False,'checked':now.isoformat(),'courses_checked':len(courses)})
+        finally:
+            self.refresh_lock.release()
+
+    def start_auto_refresh(self):
+        def loop():
+            while not self.refresh_stop.wait(60):
+                try: self.refresh_due_courses()
+                except Exception: pass
+        threading.Thread(target=loop, daemon=True, name='course-refresh').start()
 
     def analyze(self, args):
         course = next((c for c in self.store.courses() if c['id'] == args['course']), None)
@@ -206,7 +259,7 @@ def make_handler(app):
                     if self.path.endswith('/plan') and any(p['code'] in completed for p in plan):
                         raise ValueError('This course is already recorded as completed. Remove that completion before planning a retake.')
                     plan = [p for p in plan if p['code'] not in completed]
-                    app.store.save_planner(profile, plan)
+                    app.store.mutate_with_undo('planner', {'profile':profile, 'plan':plan})
                     return self.send({'ok': True})
                 if self.path == '/api/courses':
                     importer.course_url(args['code'], args['quarter'], int(args['year']))
@@ -215,18 +268,29 @@ def make_handler(app):
                     return self.send(app.job(lambda: app.analyze(args)), 202)
                 if self.path == '/api/calendar':
                     return self.send(app.job(app.refresh_calendar), 202)
+                if self.path == '/api/undo':
+                    with app.course_lock: label = app.store.undo()
+                    return self.send({'undone': label})
+                if self.path == '/api/refresh-updates/clear':
+                    app.store.set('refresh_updates', [])
+                    return self.send({'ok':True})
+                if self.path == '/api/auto-refresh':
+                    if not isinstance(args.get('enabled'), bool): raise ValueError('Choose enabled or disabled.')
+                    app.store.set('auto_refresh_enabled', args['enabled'])
+                    return self.send({'ok':True})
                 if self.path == '/api/preferences':
                     if args.get('theme') not in ('system', 'light', 'dark'):
                         raise ValueError('Choose system, light, or dark appearance.')
                     app.store.set('theme', args['theme'])
                 elif self.path == '/api/complete':
-                    app.store.completion(args['id'], args['done'])
+                    app.store.mutate_with_undo('completion', args)
                 elif self.path == '/api/notes':
-                    course = next(c for c in app.store.courses() if c['id'] == args['id'])
-                    course['notes'] = str(args['notes'])[:20000]
-                    app.store.save_course(course)
+                    with app.course_lock:
+                        course = next(c for c in app.store.courses() if c['id'] == args['id'])
+                        course['notes'] = str(args['notes'])[:20000]
+                        app.store.save_course(course)
                 elif self.path == '/api/delete':
-                    app.store.delete_course(args['id'])
+                    with app.course_lock: app.store.mutate_with_undo('delete', args)
                 elif self.path == '/api/restore':
                     app.store.restore(args)
                 else:
@@ -248,6 +312,7 @@ def main():
     args = parser.parse_args()
     app = Application(args.data_dir)
     server = ThreadingHTTPServer(('127.0.0.1', args.port), make_handler(app))
+    app.start_auto_refresh()
     url = f'http://127.0.0.1:{server.server_port}'
     print(f'UWCS Tracker: {url}\nLocal data: {app.store.directory}\nPress Ctrl+C to stop.', flush=True)
     if args.desktop:
@@ -266,6 +331,7 @@ def main():
             server.serve_forever()
         except KeyboardInterrupt:
             pass
+    app.refresh_stop.set()
     server.server_close()
     app.pool.shutdown(wait=False, cancel_futures=True)
 

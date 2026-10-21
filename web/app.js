@@ -150,7 +150,23 @@ function title() {
     ],
   }[view];
 }
+function updateToolbar() {
+  $("#undo-action").hidden = !state.undo;
+  $("#undo-action").textContent = "↶ Undo";
+  $("#undo-action").title = state.undo
+    ? "Undo: " + state.undo
+    : "Nothing to undo";
+  $("#refresh-updates").textContent =
+    `Course updates${state.refresh_updates?.length ? " (" + state.refresh_updates.length + ")" : ""}`;
+}
+function showUpdates() {
+  const status = state.auto_refresh || {};
+  $("#updates-content").innerHTML =
+    `<p>Automatic refresh is ${state.preferences.auto_refresh ? "on · every 30 minutes while this app runs" : "off"}.</p><p>${status.running ? "Checking current-quarter courses…" : status.checked ? "Last check: " + esc(new Date(status.checked).toLocaleString()) : "The first check runs within a minute of starting the app."}</p>${(state.refresh_updates || []).map((u) => `<article class="panel update-entry"><h3>${esc(prettyCode(u.course))}</h3><small>${esc(new Date(u.checked).toLocaleString())}</small>${u.error ? `<p class="warning">Refresh failed: ${esc(u.error)}. Saved course data retained.</p>` : `<ul>${u.changes.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>`}${ext(u.url, "Course source")}</article>`).join("") || "<p>No changes or errors recorded yet.</p>"}`;
+  $("#updates-dialog").showModal();
+}
 function render() {
+  updateToolbar();
   document.querySelector(".termbar").hidden = ["settings", "planner"].includes(
     view,
   );
@@ -345,7 +361,7 @@ function courseFindings(c) {
   }`;
 }
 function settings() {
-  return `<div class="panel settings"><div class="appearance-setting"><div><h3>Appearance</h3><p>Choose a theme. Your preference stays with this local workspace.</p></div><label class="visually-hidden" for="theme-preference">Appearance</label><select id="theme-preference"><option value="system">Use device setting</option><option value="light">Light</option><option value="dark">Dark</option></select></div><h3>Your workspace lives here</h3><p>SQLite database, cached slides, and preferences are stored on this device:</p><code>${esc(state.data_path)}</code><h3>Back up or move your workspace</h3><p>Export a JSON backup to move courses, notes, completion marks, and slide findings between installations. Import merges the backup into this workspace; matching courses are updated. Downloaded PDF files are not included.</p><div class="settings-actions"><button class="primary" data-action="export">Export backup</button><button class="secondary" data-action="restore">Import backup</button><input type="file" id="backup-file" accept="application/json,.json" hidden></div><h3>UW academic calendar</h3><p>Quarter defaults use instruction start through finals. During breaks, the upcoming quarter is selected. ${ext(state.calendar_source, "Official calendar")}</p><p>${state.calendar_checked ? "Last refreshed " + esc(new Date(state.calendar_checked).toLocaleString()) : "Using the bundled official UW calendar snapshot downloaded October 20, 2026."}</p><button class="secondary" data-action="calendar">↻ Refresh academic calendar</button><h3>Slide analysis</h3><p>Analyze a linked PDF to extract text and find passages mentioning deadlines, exams, assignments, or announcements. Findings include page links and require your review. This is keyword-based extraction, not an AI summary. Image-only slides need OCR, which is not included in this version.</p><h3>Local operation</h3><p>There are no accounts, analytics, or cloud database. Refreshes contact public UW sites. Saved agenda data works offline while this local app is running. Cross-device sync, automatic background scheduling, and submission verification are not included yet.</p></div>`;
+  return `<div class="panel settings"><div class="appearance-setting"><div><h3>Appearance</h3><p>Choose a theme. Your preference stays with this local workspace.</p></div><label class="visually-hidden" for="theme-preference">Appearance</label><select id="theme-preference"><option value="system">Use device setting</option><option value="light">Light</option><option value="dark">Dark</option></select></div><h3>Automatic course refresh</h3><label class="checkbox-label"><input id="auto-refresh-enabled" type="checkbox" ${state.preferences.auto_refresh ? "checked" : ""}>Refresh current-quarter courses every 30 minutes</label><p>Runs while this local app is running. Checks start within a minute; dates, exam times/rooms, and new materials appear in Course updates. Errors retain saved data. Past and future courses use manual refresh.</p><h3>Undo recent changes</h3><p>Use Undo at the top to reverse course removal, assignment completion, or planner history/preferences/plan changes. The last 20 actions survive restarts. Undo does not reverse imports, refreshes, backup restores, notes, or appearance settings.</p><h3>Your workspace lives here</h3><p>SQLite database, cached slides, and preferences are stored on this device:</p><code>${esc(state.data_path)}</code><h3>Back up or move your workspace</h3><p>Export a JSON backup to move courses, notes, completion marks, and slide findings between installations. Import merges the backup into this workspace; matching courses are updated. Downloaded PDF files are not included.</p><div class="settings-actions"><button class="primary" data-action="export">Export backup</button><button class="secondary" data-action="restore">Import backup</button><input type="file" id="backup-file" accept="application/json,.json" hidden></div><h3>UW academic calendar</h3><p>Quarter defaults use instruction start through finals. During breaks, the upcoming quarter is selected. ${ext(state.calendar_source, "Official calendar")}</p><p>${state.calendar_checked ? "Last refreshed " + esc(new Date(state.calendar_checked).toLocaleString()) : "Using the bundled official UW calendar snapshot downloaded October 20, 2026."}</p><button class="secondary" data-action="calendar">↻ Refresh academic calendar</button><h3>Slide analysis</h3><p>Analyze a linked PDF to extract text and find passages mentioning deadlines, exams, assignments, or announcements. Findings include page links and require your review. This is keyword-based extraction, not an AI summary. Image-only slides need OCR, which is not included in this version.</p><h3>Local operation</h3><p>There are no accounts, analytics, or cloud database. Refreshes contact public UW sites. Saved agenda data works offline while this local app is running. Cross-device sync and submission verification are not included. Automatic refresh stops when the local app stops.</p></div>`;
 }
 function showAnalysis(result) {
   $("#analysis-content").innerHTML =
@@ -356,7 +372,24 @@ document.addEventListener("click", async (event) => {
   const b = event.target.closest("button");
   if (!b || b.closest("#planner-root")) return;
   try {
-    if (b.dataset.pickCourse) {
+    if (b.dataset.action === "undo") {
+      b.disabled = true;
+      const result = await api("/api/undo", {});
+      await load();
+      toast("Undone: " + result.undone);
+    } else if (b.dataset.action === "updates") {
+      state = await api("/api/state");
+      updateToolbar();
+      showUpdates();
+    } else if (b.dataset.action === "close-updates") {
+      $("#updates-dialog").close();
+    } else if (b.dataset.action === "clear-updates") {
+      await api("/api/refresh-updates/clear", {});
+      state.refresh_updates = [];
+      updateToolbar();
+      $("#updates-dialog").close();
+      showUpdates();
+    } else if (b.dataset.pickCourse) {
       clearCourseError();
       $("#course-code").value = prettyCode(b.dataset.pickCourse);
       syncCourseChoice();
@@ -397,13 +430,13 @@ document.addEventListener("click", async (event) => {
     } else if (b.dataset.delete) {
       if (
         confirm(
-          "Remove this course from your local workspace? Export a backup first if you want to keep its notes.",
+          "Remove this course from your local workspace? You can restore it using Undo.",
         )
       ) {
         await api("/api/delete", { id: b.dataset.delete });
         selectedCourse = null;
         await load();
-        toast("Course removed.");
+        toast("Course removed. Use Undo at the top to restore it.", 10000);
       }
     } else if (b.dataset.action === "add") openAdd();
     else if (b.dataset.action === "back") {
@@ -440,6 +473,13 @@ document.addEventListener("change", async (e) => {
   try {
     if (["course-quarter", "course-year"].includes(e.target.id))
       clearCourseError();
+    if (e.target.id === "auto-refresh-enabled") {
+      await api("/api/auto-refresh", { enabled: e.target.checked });
+      state.preferences.auto_refresh = e.target.checked;
+      toast(
+        "Automatic refresh " + (e.target.checked ? "enabled." : "disabled."),
+      );
+    }
     if (e.target.id === "theme-preference") {
       await saveTheme(e.target.value);
     }
@@ -449,6 +489,7 @@ document.addEventListener("change", async (e) => {
         done: e.target.checked,
       });
       await load();
+      toast("Completion updated. Use Undo to reverse it.");
     }
     if (e.target.id === "backup-file" && e.target.files[0]) {
       const data = JSON.parse(await e.target.files[0].text());
@@ -551,3 +592,33 @@ load().catch((error) => {
   $("#content").textContent =
     `Could not open the local workspace: ${error.message}`;
 });
+
+// Keep update notifications fresh without replacing a form the user is editing.
+let pollingRefresh = false;
+setInterval(async () => {
+  if (!state || pollingRefresh || document.hidden) return;
+  pollingRefresh = true;
+  try {
+    const next = await api("/api/state");
+    const changed =
+      JSON.stringify(next.refresh_updates) !==
+      JSON.stringify(state.refresh_updates);
+    state.undo = next.undo;
+    state.refresh_updates = next.refresh_updates;
+    state.auto_refresh = next.auto_refresh;
+    updateToolbar();
+    if (
+      changed &&
+      !selectedCourse &&
+      !["planner", "settings"].includes(view) &&
+      !document.querySelector("dialog[open]")
+    ) {
+      state = next;
+      render();
+    }
+  } catch (_) {
+    /* Keep offline data on screen; retry on the next poll. */
+  } finally {
+    pollingRefresh = false;
+  }
+}, 30000);
