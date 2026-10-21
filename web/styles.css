@@ -22,6 +22,9 @@
   --toast: #302740;
   --shadow: #20203814;
   --backdrop: #17132170;
+  --danger: #a62e40;
+  --danger-bg: #fff1f3;
+  --danger-line: #e5aeb7;
   font-family: Inter, "Segoe UI", system-ui, sans-serif;
   color: var(--ink);
   font-size: 14px;
@@ -50,6 +53,9 @@
   --toast: #382e4b;
   --shadow: #00000030;
   --backdrop: #05060bb0;
+  --danger: #ffacb8;
+  --danger-bg: #38202a;
+  --danger-line: #8b4555;
 }
 * {
   box-sizing: border-box;
@@ -1236,5 +1242,54 @@ textarea:focus-visible {
     align-items: stretch;
     flex-direction: column;
     gap: 12px;
+  }
+}
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 10px 14px;
+  border: 1px solid var(--danger-line);
+  border-radius: 7px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.danger-button:hover {
+  border-color: var(--danger);
+}
+.danger-button.compact {
+  min-height: 32px;
+  padding: 7px 10px;
+  font-size: 11px;
+}
+.detail-toolbar,
+.course-actions,
+.course-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.detail-toolbar {
+  justify-content: space-between;
+}
+.course-card-actions {
+  width: 100%;
+  justify-content: space-between;
+}
+.course-card-foot {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+@media (max-width: 720px) {
+  .course-actions {
+    gap: 8px;
+  }
+  .detail-toolbar {
+    align-items: flex-start;
   }
 }

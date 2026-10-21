@@ -250,7 +250,7 @@ function courseCard(c) {
     .map((e) => ext(e.url, e.label))
     .join(
       "",
-    )}</div></div><div class="course-card-foot"><span>${c.checked ? "Checked " + new Date(c.checked).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "Not imported yet"}</span><button class="text-button" data-course="${esc(c.id)}">Open dashboard →</button></div></article>`;
+    )}</div></div><div class="course-card-foot"><span>${c.checked ? "Checked " + new Date(c.checked).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "Not imported yet"}</span><div class="course-card-actions"><button type="button" class="danger-button compact" data-delete="${esc(c.id)}" aria-label="Remove ${esc(prettyCode(c.code))}">Remove course</button><button class="text-button" data-course="${esc(c.id)}">Open dashboard →</button></div></div></article>`;
 }
 function eventRow(e) {
   return `<div class="event-row ${state.completions[e.id] ? "done" : ""}"><input class="check" type="checkbox" aria-label="Mark ${esc(e.title)} complete" data-event="${esc(e.id)}" ${state.completions[e.id] ? "checked" : ""}><div class="event-main">${ext(e.url, e.title)}<small>${esc(prettyCode(e.course.code))} · ${esc(e.kind)} · ${ext(e.source, "Source")}${e.changed_from ? ` · <span class="changed">Moved from ${dateLabel(e.changed_from)}</span>` : ""}</small></div><div class="event-date"><b>${esc(relative(e.date))}</b>${dateLabel(e.date)} · ${e.time ? esc(e.time) : "Time unspecified"}</div></div>`;
@@ -281,7 +281,7 @@ function detail() {
   if (detailTab === "insights") body = courseFindings(c);
   if (detailTab === "notes")
     body = `<div class="panel settings"><label for="course-notes">Your private course notes</label><textarea id="course-notes" placeholder="Things to remember for this class…">${esc(c.notes || "")}</textarea><button class="primary" data-action="save-notes">Save notes</button></div>`;
-  return `<button class="text-button detail-back" data-action="back">← Back to courses</button><div class="detail-header"><span class="course-code">${esc(prettyCode(c.code))}</span><h2>${esc(courseName(c))}</h2><div class="course-meta">${esc(c.quarter)} ${c.year} · ${c.checked ? "Last imported " + new Date(c.checked).toLocaleString() : "Awaiting first import"}</div><div class="course-links">${ext(c.url, "Course page")}${(c.essentials || []).map((e) => ext(e.url, e.label)).join("")}</div></div>${(c.warnings || []).map((w) => `<div class="warning">${esc(w)}</div>`).join("")}<div class="section-title"><h2>Your course workspace</h2><button class="secondary" data-refresh="${esc(c.id)}">↻ Refresh course</button></div><div class="tabs">${[
+  return `<button class="text-button detail-back" data-action="back">← Back to courses</button><div class="detail-header"><div class="detail-toolbar"><span class="course-code">${esc(prettyCode(c.code))}</span><div class="course-actions"><button type="button" class="secondary" data-refresh="${esc(c.id)}">Refresh course</button><button type="button" class="danger-button" data-delete="${esc(c.id)}" aria-label="Remove ${esc(prettyCode(c.code))}">Remove course</button></div></div><h2>${esc(courseName(c))}</h2><div class="course-meta">${esc(c.quarter)} ${c.year} · ${c.checked ? "Last imported " + new Date(c.checked).toLocaleString() : "Awaiting first import"}</div><div class="course-links">${ext(c.url, "Course page")}${(c.essentials || []).map((e) => ext(e.url, e.label)).join("")}</div></div>${(c.warnings || []).map((w) => `<div class="warning">${esc(w)}</div>`).join("")}<div class="section-title"><h2>Your course workspace</h2></div><div class="tabs">${[
     ["agenda", "Agenda"],
     ["materials", "Materials & slides"],
     ["insights", "Slide findings"],
@@ -294,7 +294,7 @@ function detail() {
     )
     .join(
       "",
-    )}</div>${body}<div class="section-title"><small>Your notes and checklist are stored locally.</small><button class="text-button" data-delete="${esc(c.id)}">Remove course</button></div>`;
+    )}</div>${body}<p class="note">Your notes and checklist are stored locally.</p>`;
 }
 function courseFindings(c) {
   const decks = c.materials.filter((m) => state.analyses[m.url]);
