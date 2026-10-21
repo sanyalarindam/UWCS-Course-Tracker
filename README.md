@@ -74,13 +74,31 @@ Open **Course planner** in the sidebar. It defaults to **UW Seattle Computer Sci
 2. Select a course in the **Course map** to inspect required AND/OR groups, minimum grades, recommended preparation, official catalog text, and downstream courses.
 3. Start with **My course path**, showing only completed, current, and planned courses. Use **Classes taken only** or **Future classes (planned)** for smaller views. **Explore core pathways**, search, and **Show connections** let you expand the map when needed. Personal views keep other prerequisite nodes hidden; full AND/OR rules remain in the selected course checklist. **Find a course** always searches the entire catalog, including courses you have not taken or planned. Results open their prerequisite details automatically; use **Clear search** to return to the selected map view.
 4. Choose **Plan into** and add courses to future quarters. Remove an entry before moving it to a different quarter.
-5. Review prerequisite conflicts and the **Degree progress**. Import a schedule separately when its quarter is published.
+5. Review prerequisite conflicts and **Degree progress**. Import a schedule separately when its quarter is published.
 
 The bundled catalog snapshot contains 66 courses and supporting prerequisite nodes, sourced from the [UW CSE catalog](https://www.washington.edu/students/crscat/cse.html), [CS degree requirements](https://www.washington.edu/students/gencat/program/S/ComputerScience-210.html), and [core list](https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/). Each course links to its official source. Interest tags and ranking are app-defined. This snapshot is curated, not a live catalog sync; external and unmodeled courses explicitly require a catalog check.
 
 Completed history is self-reported, separate from assignment checkboxes and imported schedules. Future-quarter suggestions and course-map readiness provisionally include imported courses from the current UW quarter, with successful-completion assumptions shown. They do not increase degree progress or change completed history. Later planned quarters also consider valid earlier plans, with those assumptions shown. Same-quarter prerequisites do not qualify. Minimum grades are checked where modeled; missing grades prompt review. A tentative plan never confirms an offering, registration eligibility, or seat availability.
 
 Checkpoints cover fundamentals, math routes, core counts, upper-level core counts, additional core/capstone, selected elective credits, and self-reported approved science credits. They do not replace a degree audit: general education, total degree credits, GPA, admission restrictions, substitutions, section-specific rules, and adviser approvals are not evaluated. Variable-credit courses need actual approved credits entered separately. History, interests, and plans are stored locally and included in JSON backups; importing a backup with planner data replaces the planner profile and plan. Older backups preserve existing planner data.
+
+### Understand degree progress
+
+Degree progress counts **completed courses recorded in your history**, rather than inferring credit from advanced courses or imported schedules.
+
+- **Mathematics · either route** shows separate progress for the standard route (MATH 124, 125, 126, 208) and honors route (MATH 134, 135, 136). You need one complete route, not both.
+- **2/4** means two qualifying courses from the four-course route are recorded. For example, entering MATH 126 and MATH 208 does not automatically add MATH 124 and MATH 125.
+- If UW awarded specific course equivalents for AP, IB, or transfer credit, you can manually record those equivalent UW courses in your history. The app does not import transcripts or calculate equivalencies. Leave the optional grade blank when there is no numeric grade; the app will flag minimum-grade requirements for review.
+- Placement into a higher course alone does not establish credit for earlier courses. Substitutions and exceptions need adviser confirmation and are not automatically recognized by the tracker.
+- Recorded math and fundamental courses with grades below 2.0 do not satisfy their checkpoints. Blank grades count provisionally and require review.
+
+**Example:** If you recorded MATH 126 and MATH 208, the tracker shows **2/4**. If your UW record also awards credit for MATH 124 and MATH 125, enter those equivalents to reflect that history; the tracker then shows **4/4**. This is a record of your entries, not an official degree-audit result.
+
+### Plan around courses in progress
+
+Import your current-quarter course schedules under **Current courses**, then select a future quarter in the planner. A course can show **Ready after current courses** when its prerequisites include your current enrollments. For example, CSE 312 in progress can satisfy that prerequisite provisionally for a later CSE 446 plan, provided its other prerequisites are met.
+
+These checks assume successful completion, including any required minimum grade. They do not mark the current course completed or increase degree progress. Current-quarter courses do not satisfy prior-course prerequisites for plans in that same quarter. **Offering unverified** means the plan has not established that the course will be offered in that quarter; schedule imports still run the separate offering check.
 
 ### Optional desktop window
 
