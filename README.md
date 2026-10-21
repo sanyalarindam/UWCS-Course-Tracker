@@ -1,4 +1,4 @@
-# UWCS Tracker
+# CS Tracker
 
 A local course dashboard for University of Washington CSE students. Bring public course schedules, assignments, exams, and class materials into one workspace, with your notes and progress saved on your own device.
 
@@ -27,6 +27,8 @@ No account, hosted database, analytics, or AI API key is required.
 
 ## Install the Windows app
 
+**[Download the latest Windows installer](https://github.com/sanyalarindam/UWCS-Course-Tracker/releases/latest)** — standalone desktop app; no separate Python installation needed.
+
 1. Open [GitHub Releases](https://github.com/sanyalarindam/UWCS-Course-Tracker/releases/latest).
 2. Download **CS-Tracker-Setup-VERSION-Windows-x64.exe** from the release assets.
 3. Run Setup, then open **CS Tracker** from the Start menu. An optional desktop shortcut is available. The app, taskbar window, Start menu shortcut, and installer use the purple W app icon.
@@ -34,6 +36,12 @@ No account, hosted database, analytics, or AI API key is required.
 The installer includes Python and the required libraries; you do not need Python, Git, or a terminal to run the installed app. It opens in its own desktop window on Windows 10/11 x64. Setup checks/installs Microsoft Edge WebView2 Runtime using Microsoft's bootstrapper; internet access may be needed. The initial installer is not code-signed, so Windows may display an unrecognized-app warning. Release assets include **SHA256SUMS.txt** for checksum verification.
 
 Each Windows user has a separate workspace at `%LOCALAPPDATA%/UWCS Tracker`. Updates and uninstall preserve this data; export a backup before moving to another device. Existing source-based workspaces using that default folder are reused. A development workspace started with `--data-dir` remains separate: export/import its backup to move it into the installed app. Closing the desktop window stops the local server and automatic refresh.
+
+### Update an existing installation
+
+Close CS Tracker, download the latest installer, and run it over the existing installation. The installer keeps the same application identity and preserves your local workspace. Releases from **v0.2.2** onward include the purple W logo in the executable, app window/taskbar, Start menu and desktop shortcuts, and Setup. Reinstalling an older release will not add the new icon.
+
+The data folder retains its original `UWCS Tracker` name for compatibility; the installed app and shortcuts are named **CS Tracker**.
 
 ### Build the Windows installer
 
@@ -50,7 +58,7 @@ The build creates `dist/CS Tracker/CS Tracker.exe` and `dist/installer/CS-Tracke
 
 The **Windows installer** workflow runs on relevant pushes to `main` or manual dispatch. It tests the app, packages it, uploads a workflow artifact, and publishes a versioned GitHub release with the installer and checksums. The workflow uses a fresh Windows runner and does not upload local development data. macOS/Linux users can still run the source version below; installers for those platforms are not provided yet.
 
-## Quick start
+## Run from source
 
 Install **Python 3.10 or newer** and Git, then run:
 
