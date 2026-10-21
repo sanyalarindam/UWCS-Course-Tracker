@@ -70,11 +70,11 @@ Only publicly linked materials are discovered. The tested CSE 351 schedule suppl
 
 Open **Course planner** in the sidebar. It defaults to **UW Seattle Computer Science BS** with an empty history and plan.
 
-1. Expand **Your history & interests**, enter completed courses and optional grades, and choose your interests.
-2. Select a course in the **Prerequisite web** to inspect required AND/OR groups, minimum grades, recommended preparation, official catalog text, and downstream courses.
-3. Start with **My course path**, showing only completed, current, and planned courses. Use **Classes taken only** or **Future classes (planned)** for smaller views. **Explore core pathways**, search, and **Focus selected** let you expand the map when needed. Personal views keep other prerequisite nodes hidden; full AND/OR rules remain in the selected course checklist.
+1. Expand **Course history & interests**, enter completed courses and optional grades, and choose your interests.
+2. Select a course in the **Course map** to inspect required AND/OR groups, minimum grades, recommended preparation, official catalog text, and downstream courses.
+3. Start with **My course path**, showing only completed, current, and planned courses. Use **Classes taken only** or **Future classes (planned)** for smaller views. **Explore core pathways**, search, and **Show connections** let you expand the map when needed. Personal views keep other prerequisite nodes hidden; full AND/OR rules remain in the selected course checklist. **Find a course** always searches the entire catalog, including courses you have not taken or planned. Results open their prerequisite details automatically; use **Clear search** to return to the selected map view.
 4. Choose **Plan into** and add courses to future quarters. Remove an entry before moving it to a different quarter.
-5. Review prerequisite conflicts and the **CS requirement checkpoints**. Import a schedule separately when its quarter is published.
+5. Review prerequisite conflicts and the **Degree progress**. Import a schedule separately when its quarter is published.
 
 The bundled catalog snapshot contains 66 courses and supporting prerequisite nodes, sourced from the [UW CSE catalog](https://www.washington.edu/students/crscat/cse.html), [CS degree requirements](https://www.washington.edu/students/gencat/program/S/ComputerScience-210.html), and [core list](https://www.cs.washington.edu/academics/undergraduate/degree-requirements/courses/). Each course links to its official source. Interest tags and ranking are app-defined. This snapshot is curated, not a live catalog sync; external and unmodeled courses explicitly require a catalog check.
 
