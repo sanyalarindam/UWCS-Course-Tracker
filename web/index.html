@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UWCS Tracker</title><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="UWCS Tracker home"><span class="brand-mark">W</span><span>UWCS<span class="brand-sub">TRACKER</span></span></a>
+  <div class="workspace-label">YOUR WORKSPACE</div>
+  <nav><button class="nav-item active" data-view="courses"><span>▦</span> Current courses</button><button class="nav-item" data-view="agenda"><span>☷</span> All assignments</button><button class="nav-item" data-view="materials"><span>▤</span> Materials & slides</button><button class="nav-item" data-view="settings"><span>⚙</span> Local settings</button></nav>
+  <div class="sidebar-bottom"><span class="local-dot"></span> Local workspace<p>Your courses. Your device.<br>No account required.</p></div>
+</aside>
+<main>
+  <header class="topbar"><span id="breadcrumb">Workspace / Current courses</span><span class="privacy-pill"><span class="local-dot"></span> Stored on this device</span></header>
+  <div class="page">
+    <div class="page-heading"><div><div class="eyebrow">A LITTLE STRUCTURE. MORE HEADSPACE.</div><h1 id="page-title">Current courses<span>.</span></h1><p id="page-description">Everything you need for your next class, in one place.</p></div><button class="primary" id="add-course">＋ Add a course</button></div>
+    <div class="termbar"><div><span class="term-icon">◷</span><select id="term-select" aria-label="View quarter"></select><span class="tag" id="term-tag">UW academic calendar</span></div><span id="today-label"></span></div>
+    <div id="content" aria-live="polite"><div class="empty">Opening your local workspace…</div></div>
+    <footer>UWCS Tracker <span>•</span> Independent student project <span>•</span> Verify deadlines with your course staff.</footer>
+  </div>
+</main>
+<dialog id="course-dialog"><form id="course-form"><div class="modal-heading"><div><div class="eyebrow">MAKE ROOM FOR YOUR NEXT COURSE</div><h2>Add a course</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div><p>We’ll look for its public UW page and bring its schedule into your workspace.</p><label>Course code<input id="course-code" name="code" placeholder="CSE 312" required pattern="[Cc][Ss][Ee]\s*[0-9]{3}[A-Za-z]?" autocomplete="off"></label><div class="form-row"><label>Quarter<select id="course-quarter" name="quarter"><option>Winter</option><option>Spring</option><option>Summer</option><option>Autumn</option></select></label><label>Year<input id="course-year" name="year" type="number" min="2000" max="2100" required></label></div><label class="checkbox-label"><input type="checkbox" name="scan_slides" checked> Also analyze the two most recent slide decks locally</label><div class="info-box">Past or future course? Just change the quarter. If the page isn’t published yet, you can save the course and check again later.</div><div class="modal-actions"><button type="button" class="secondary close-dialog">Cancel</button><button type="submit" class="primary">Find & import course ↗</button></div></form></dialog>
+<dialog id="analysis-dialog"><div class="modal-heading"><div><div class="eyebrow">ON-DEVICE DOCUMENT REVIEW</div><h2>Inside the slides</h2></div><button class="icon-button" id="close-analysis" aria-label="Close">×</button></div><div id="analysis-content"></div></dialog>
+<div id="toast" role="status" hidden></div>
+</body></html>

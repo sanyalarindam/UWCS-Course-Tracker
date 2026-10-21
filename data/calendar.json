@@ -1,0 +1,218 @@
+[
+  {
+    "quarter": "Autumn",
+    "year": 2024,
+    "start": "2024-09-25",
+    "end": "2024-12-13"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2025,
+    "start": "2025-01-06",
+    "end": "2025-03-21"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2025,
+    "start": "2025-03-31",
+    "end": "2025-06-13"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2025,
+    "start": "2025-06-23",
+    "end": "2025-08-22"
+  },
+  {
+    "quarter": "Autumn",
+    "year": 2025,
+    "start": "2025-09-24",
+    "end": "2025-12-12"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2026,
+    "start": "2026-01-05",
+    "end": "2026-03-20"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2026,
+    "start": "2026-03-30",
+    "end": "2026-06-12"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2026,
+    "start": "2026-06-22",
+    "end": "2026-08-21"
+  },
+  {
+    "quarter": "Autumn",
+    "year": 2026,
+    "start": "2026-09-30",
+    "end": "2026-12-18"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2027,
+    "start": "2027-01-04",
+    "end": "2027-03-19"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2027,
+    "start": "2027-03-29",
+    "end": "2027-06-11"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2027,
+    "start": "2027-06-21",
+    "end": "2027-08-20"
+  },
+  {
+    "quarter": "Autumn",
+    "year": 2027,
+    "start": "2027-09-29",
+    "end": "2027-12-17"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2028,
+    "start": "2028-01-03",
+    "end": "2028-03-17"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2028,
+    "start": "2028-03-27",
+    "end": "2028-06-09"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2028,
+    "start": "2028-06-20",
+    "end": "2028-08-18"
+  },
+  {
+    "quarter": "Autumn",
+    "year": 2028,
+    "start": "2028-09-27",
+    "end": "2028-12-15"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2029,
+    "start": "2029-01-03",
+    "end": "2029-03-16"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2029,
+    "start": "2029-03-26",
+    "end": "2029-06-08"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2029,
+    "start": "2029-06-18",
+    "end": "2029-08-17"
+  },
+  {
+    "quarter": "Autumn",
+    "year": 2029,
+    "start": "2029-09-26",
+    "end": "2029-12-14"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2030,
+    "start": "2030-01-07",
+    "end": "2030-03-22"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2030,
+    "start": "2030-04-01",
+    "end": "2030-06-14"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2030,
+    "start": "2030-06-24",
+    "end": "2030-08-23"
+  },
+  {
+    "quarter": "Autumn",
+    "year": 2030,
+    "start": "2030-09-25",
+    "end": "2030-12-13"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2031,
+    "start": "2031-01-06",
+    "end": "2031-03-21"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2031,
+    "start": "2031-03-31",
+    "end": "2031-06-13"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2031,
+    "start": "2031-06-23",
+    "end": "2031-08-22"
+  },
+  {
+    "quarter": "Autumn",
+    "year": 2031,
+    "start": "2031-09-24",
+    "end": "2031-12-12"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2032,
+    "start": "2032-01-05",
+    "end": "2032-03-19"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2032,
+    "start": "2032-03-29",
+    "end": "2032-06-11"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2032,
+    "start": "2032-06-21",
+    "end": "2032-08-20"
+  },
+  {
+    "quarter": "Autumn",
+    "year": 2032,
+    "start": "2032-09-29",
+    "end": "2032-12-17"
+  },
+  {
+    "quarter": "Winter",
+    "year": 2033,
+    "start": "2033-01-03",
+    "end": "2033-03-18"
+  },
+  {
+    "quarter": "Spring",
+    "year": 2033,
+    "start": "2033-03-28",
+    "end": "2033-06-10"
+  },
+  {
+    "quarter": "Summer",
+    "year": 2033,
+    "start": "2033-06-21",
+    "end": "2033-08-19"
+  }
+]

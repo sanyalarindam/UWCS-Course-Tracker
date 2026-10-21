@@ -1,0 +1,14 @@
+.deps/
+.venv/
+__pycache__/
+*.pyc
+.local-data/
+*.sqlite3*
+artifacts/
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+uwcs-backup-*.json
+*.log

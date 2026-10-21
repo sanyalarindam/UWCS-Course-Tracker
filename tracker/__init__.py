@@ -1,0 +1,1 @@
+"""UWCS Tracker local application."""
