@@ -16,7 +16,7 @@
   let state,
     helpers,
     selected = "CSE311",
-    graphMode = "pathways",
+    graphMode = "mine",
     search = "",
     target = "",
     profileOpen = false,
@@ -85,15 +85,22 @@
   function graphCourses() {
     const courses = state.planner.courses,
       map = byCode();
+    const personal = ["mine", "taken", "future"].includes(graphMode);
     let visible = new Set(
       courses
-        .filter((c) =>
-          graphMode === "all" || graphMode === "ready"
-            ? graphMode === "all" || c.readiness.met
-            : graphMode === "interests"
-              ? c.tags.some((t) => state.planner.profile.interests.includes(t))
-              : corePath.has(c.code),
-        )
+        .filter((c) => {
+          if (graphMode === "mine")
+            return ["completed", "current", "planned"].includes(c.status);
+          if (graphMode === "taken") return c.status === "completed";
+          if (graphMode === "future") return c.status === "planned";
+          if (graphMode === "all") return true;
+          if (graphMode === "ready") return c.readiness.met;
+          if (graphMode === "interests")
+            return c.tags.some((t) =>
+              state.planner.profile.interests.includes(t),
+            );
+          return corePath.has(c.code);
+        })
         .map((c) => c.code),
     );
     if (graphMode === "focus") {
@@ -111,21 +118,22 @@
       for (const code of map.get(selected)?.unlocks || []) visible.add(code);
     }
     if (search) {
-      visible = new Set(
-        courses
-          .filter((c) =>
-            `${label(c.code)} ${c.code} ${c.name}`
-              .toLowerCase()
-              .includes(search.toLowerCase()),
-          )
-          .map((c) => c.code),
-      );
+      for (const code of [...visible]) {
+        const c = map.get(code);
+        if (
+          !`${label(c.code)} ${c.code} ${c.name}`
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        )
+          visible.delete(code);
+      }
     }
-    // Include every formal alternative so AND/OR groups never silently disappear.
-    for (const code of [...visible])
-      for (const p of map.get(code)?.prerequisites.flatMap((g) => g.any_of) ||
-        [])
-        visible.add(p);
+    // Personal views stay limited to the user's courses; details retain full AND/OR rules.
+    if (!personal && !search)
+      for (const code of [...visible])
+        for (const p of map.get(code)?.prerequisites.flatMap((g) => g.any_of) ||
+          [])
+          visible.add(p);
     return courses.filter((c) => visible.has(c.code));
   }
 
@@ -133,8 +141,11 @@
     const courses = graphCourses(),
       rows = new Map();
     positions = new Map();
+    const columns = [...new Set(courses.map((c) => depth(c.code)))].sort(
+      (a, b) => a - b,
+    );
     for (const course of courses.sort((a, b) => a.code.localeCompare(b.code))) {
-      const column = depth(course.code);
+      const column = columns.indexOf(depth(course.code));
       const row = rows.get(column) || 0;
       positions.set(course.code, { x: 24 + column * 252, y: 48 + row * 94 });
       rows.set(column, row + 1);
@@ -166,7 +177,7 @@
         );
       }
     }
-    return `<div class="planner-graph-viewport" tabindex="0" aria-label="Scrollable prerequisite web. Select a course to inspect prerequisites and next steps."><div class="planner-graph-canvas"><svg width="${dimensions.width}" height="${dimensions.height}" aria-hidden="true"><defs><marker id="planner-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 8 4 L 0 8 z" class="edge-arrow" /></marker></defs>${edges.join("")}</svg>${Array.from({ length: Math.max(0, ...rows.keys()) + 1 }, (_, i) => `<span class="graph-stage" data-stage="${i}">${["Starting points", "Foundations", "Build on them", "Explore further", "Specialize", "Advanced"][i]}</span>`).join("")}${courses.map((c) => `<button type="button" class="graph-node status-${c.status} ${selected === c.code ? "selected" : ""}" data-select-course="${c.code}" aria-pressed="${selected === c.code}" aria-label="${escape(label(c.code) + " " + c.name + "; " + statusLabel(c))}"><b>${escape(label(c.code))}<span class="node-status-dot" aria-hidden="true"></span></b><span>${escape(c.name)}</span></button>`).join("")}${courses.length ? "" : '<p class="empty">No courses match this filter. Try All courses.</p>'}</div></div>`;
+    return `<div class="planner-graph-viewport" tabindex="0" aria-label="Scrollable prerequisite web. Select a course to inspect prerequisites and next steps."><div class="planner-graph-canvas"><svg width="${dimensions.width}" height="${dimensions.height}" aria-hidden="true"><defs><marker id="planner-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 8 4 L 0 8 z" class="edge-arrow" /></marker></defs>${edges.join("")}</svg>${Array.from({ length: Math.max(0, ...rows.keys()) + 1 }, (_, i) => `<span class="graph-stage" data-stage="${i}">${`COURSE GROUP ${i + 1}`}</span>`).join("")}${courses.map((c) => `<button type="button" class="graph-node status-${c.status} ${selected === c.code ? "selected" : ""}" data-select-course="${c.code}" aria-pressed="${selected === c.code}" aria-label="${escape(label(c.code) + " " + c.name + "; " + statusLabel(c))}"><b>${escape(label(c.code))}<span class="node-status-dot" aria-hidden="true"></span></b><span>${escape(c.name)}</span></button>`).join("")}${courses.length ? "" : '<p class="empty">No courses in this view yet. Add completed courses under Your history & interests, or use Explore core pathways to choose future courses.</p>'}</div></div>`;
   }
 
   function statusLabel(c) {
@@ -255,6 +266,11 @@
 
   function render(nextState) {
     state = nextState;
+    if (
+      ["mine", "taken", "future"].includes(graphMode) &&
+      !graphCourses().some((c) => c.code === selected)
+    )
+      selected = graphCourses()[0]?.code || "";
     const terms = futureTerms();
     if (!target || !terms.some((t) => termKey(t) === target))
       target = termKey(terms[0]);
@@ -288,7 +304,10 @@
       .join(
         "",
       )}</div><div class="planner-layout"><section class="panel planner-map-panel"><div class="planner-map-heading"><div><h2>Prerequisite web</h2><p>Select a course to see its required preparation and the courses it unlocks.</p></div><button class="secondary" type="button" data-plan-action="focus">Focus selected</button></div><div class="planner-map-filters"><label class="visually-hidden" for="graph-filter">Map view</label><select id="graph-filter">${[
-      ["pathways", "Core pathways"],
+      ["mine", "My course path"],
+      ["taken", "Classes taken only"],
+      ["future", "Future classes (planned)"],
+      ["pathways", "Explore core pathways"],
       ["all", "All mapped courses"],
       ["ready", "Prerequisites recorded"],
       ["interests", "My interests"],
@@ -300,7 +319,7 @@
       )
       .join(
         "",
-      )}</select><input id="graph-search" aria-label="Search the prerequisite web" placeholder="Find a course…" value="${escape(search)}"></div><div class="graph-legend"><span class="legend-completed">Completed</span><span class="legend-current">Current</span><span class="legend-planned">Planned</span><span class="legend-ready">Prerequisites recorded</span><span>Solid: required</span><span>Dashed: alternative</span><span>Dotted: recommended</span></div><div id="planner-graph">${graph()}</div><p class="note planner-map-note">Scroll in the map to explore. Alternatives are connected individually; the course detail explains which groups are required together. External and unmodeled courses need a catalog check.</p></section><div id="planner-detail">${detail()}</div></div>${suggestions()}${planBoard()}${requirements()}<p class="note">Catalog snapshot: ${escape(state.planner.version)}. Interest tags and ranking are app suggestions. Planning a course does not establish that it is offered or that you can register. ${sourceLink(state.planner.sources.pathways, "UW suggested pathways")}</p></div>`;
+      )}</select><input id="graph-search" aria-label="Search the prerequisite web" placeholder="Find a course…" value="${escape(search)}"></div><div class="graph-legend"><span class="legend-completed">Completed</span><span class="legend-current">Current</span><span class="legend-planned">Planned</span><span class="legend-ready">Prerequisites recorded</span><span>Solid: required</span><span>Dashed: alternative</span><span>Dotted: recommended</span></div><div id="planner-graph">${graph()}</div><p class="note planner-map-note">Start with My course path for a simple view of your completed, current, and planned courses. Future classes shows only courses you have planned. Select a course for its full prerequisite checklist; Focus selected expands its connections.</p></section><div id="planner-detail">${detail()}</div></div>${suggestions()}${planBoard()}${requirements()}<p class="note">Catalog snapshot: ${escape(state.planner.version)}. Interest tags and ranking are app suggestions. Planning a course does not establish that it is offered or that you can register. ${sourceLink(state.planner.sources.pathways, "UW suggested pathways")}</p></div>`;
   }
 
   function positionGraph() {
@@ -459,6 +478,10 @@
     };
     root.querySelector("#graph-filter").onchange = (event) => {
       graphMode = event.target.value;
+      selected = graphCourses().some((c) => c.code === selected)
+        ? selected
+        : graphCourses()[0]?.code || "";
+      document.querySelector("#planner-detail").innerHTML = detail();
       document.querySelector("#planner-graph").innerHTML = graph();
       positionGraph();
     };

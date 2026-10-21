@@ -72,7 +72,7 @@ Open **Course planner** in the sidebar. It defaults to **UW Seattle Computer Sci
 
 1. Expand **Your history & interests**, enter completed courses and optional grades, and choose your interests.
 2. Select a course in the **Prerequisite web** to inspect required AND/OR groups, minimum grades, recommended preparation, official catalog text, and downstream courses.
-3. Use the map filters, search, or **Focus selected** to explore a path.
+3. Start with **My course path**, showing only completed, current, and planned courses. Use **Classes taken only** or **Future classes (planned)** for smaller views. **Explore core pathways**, search, and **Focus selected** let you expand the map when needed. Personal views keep other prerequisite nodes hidden; full AND/OR rules remain in the selected course checklist.
 4. Choose **Plan into** and add courses to future quarters. Remove an entry before moving it to a different quarter.
 5. Review prerequisite conflicts and the **CS requirement checkpoints**. Import a schedule separately when its quarter is published.
 

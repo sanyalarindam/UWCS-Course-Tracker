@@ -609,3 +609,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+.planner-graph-viewport:not(:has(.graph-node)) {
+  height: 180px;
+}
+.planner-graph-canvas > .empty {
+  max-width: 580px;
+  padding: 64px 24px 24px;
+  text-align: left;
+}
